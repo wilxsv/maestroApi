@@ -1,0 +1,9 @@
+{
+    "require": {
+        "silex/silex": "~2.0",
+        "doctrine/dbal": "~2.2",
+        "doctrine/dbal": "2.*",
+        "symfony/doctrine-bridge": "2.*",
+        "dflydev/doctrine-orm-service-provider": "1.0.*@dev"
+    }
+}
