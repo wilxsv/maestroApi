@@ -104,6 +104,20 @@
 	 return $app->json(array('respuesta' => $array), 201);
  });
 
+//Listado de ecos
+ $establecimiento->get('/ecos', function () use ($app) {
+	 $tocken = $_GET["tocken"];
+	 $acceso = $app['autentica'];
+	 $idEstablecimiento = '';
+	 if ( !empty($_GET['idEstablecimiento']) && is_numeric($_GET['idEstablecimiento']) ){
+		 $idEstablecimiento = 'AND establecimiento_id = '.$_GET['idEstablecimiento'];
+	 }
+	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
+	 $sql = "SELECT id, nombre_equipo, nombre_equipo FROM ctl_equipo WHERE id > 0 $idEstablecimiento"; 
+	 $array = $app['dbs']['establecimiento']->fetchAll($sql);
+	 return $app->json(array('respuesta' => $array), 201);
+ });
+
 //Listado de esquemas de informacion 
  $establecimiento->get('/esquemas', function () use ($app) {
 	 $tocken = $_GET["tocken"];
