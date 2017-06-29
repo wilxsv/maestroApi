@@ -90,7 +90,26 @@
 	 $select = "id, id_tipo_establecimiento, nombre, direccion, telefono, fax, latitud, longitud, anio_apertura, activo, idmicrored, poblacion_asignana, cantidad_familia, enable_schema";
 	 $ids = $_GET['ids'];
 	 $sql = "SELECT $select FROM ctl_establecimiento WHERE enable_schema = 1 AND id_cat_nivel_minsal IN ($ids)"; 
-	 echo $sql;
+	 $array = $app['dbs']['establecimiento']->fetchAll($sql);
+	 return $app->json(array('respuesta' => $array), 201);
+ });
+
+//Listado de micro redes
+ $establecimiento->get('/microred', function () use ($app) {
+	 $tocken = $_GET["tocken"];
+	 $acceso = $app['autentica'];
+	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
+	 $sql = "SELECT id, nombre, activo, sibasi_id AS establecimiento_cabeza FROM ctl_microred"; 
+	 $array = $app['dbs']['establecimiento']->fetchAll($sql);
+	 return $app->json(array('respuesta' => $array), 201);
+ });
+
+//Listado de esquemas de informacion 
+ $establecimiento->get('/esquemas', function () use ($app) {
+	 $tocken = $_GET["tocken"];
+	 $acceso = $app['autentica'];
+	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
+	 $sql = "SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT LIKE 'p%'and schema_name <> 'information_schema'"; 
 	 $array = $app['dbs']['establecimiento']->fetchAll($sql);
 	 return $app->json(array('respuesta' => $array), 201);
  });

@@ -20,6 +20,10 @@
             'dbname'    => 'e',
             'user'      => 'dtic',
             'password'  => 'dtic',
+    'charset'  => 'utf8',
+    'driverOptions' => array(
+        1002 => 'SET NAMES utf8'
+    )
         ),
         'insumo' => array(
             'driver'    => 'pdo_pgsql',
@@ -27,6 +31,10 @@
             'dbname'    => 'maestroinsumo',
             'user'      => 'dtic',
             'password'  => 'dtic',
+    'charset'  => 'utf8',
+    'driverOptions' => array(
+        1002 => 'SET NAMES utf8'
+    )
         ),
         'sinab' => array(
             'driver'    => 'pdo_sqlsrv',
@@ -34,6 +42,10 @@
             'dbname'    => 'abastecimiento',
             'user'      => 'sa',
             'password'  => 'passwd',
+    'charset'  => 'utf8',
+    'driverOptions' => array(
+        1002 => 'SET NAMES utf8'
+    )
         ),
     ),
  ));
