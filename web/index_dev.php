@@ -13,6 +13,7 @@
  use Symfony\Component\HttpFoundation\ParameterBag;
  
  $app = new Silex\Application();
+ $app['debug'] = true;
  $uri = '/v1/';
  
  require_once __DIR__.'/../src/controller/configController.php';
@@ -27,8 +28,21 @@
   $app->get('/', function () use ($app) {
 	 
     return $app->json(array('respuesta' => 'Estamos activos, que le podemos responder'), 201);
- }); 
+ });
+ /*
+ $app->error(function (\Exception $e, $code) {
+  switch ($code) {
+    case 404:
+        $message = 'No interpreto bien tu pregunta.';
+        break;
+    default:
+        $message = 'Lo sentimos pero ha sucedido un error grave.';
+  }
+  return new Response($message);
+ });*/
+ 
  $app->run();
+/*curl http://localhost:8080/api/v1/consumo/posts -d '{"tocken":"passw","datos":[{}]}' -H 'Content-Type: application/json'*/
 ?>
 
 	
