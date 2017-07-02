@@ -19,9 +19,11 @@
  require_once __DIR__.'/../src/controller/configController.php';
  require_once __DIR__.'/../src/controller/infoController.php';
  require_once __DIR__.'/../src/controller/establecimientoController.php';
+ require_once __DIR__.'/../src/controller/insumoController.php';
  
  $app->mount($uri.'info', $info);
  $app->mount($uri.'establecimientos', $establecimiento);
+ $app->mount($uri.'insumos', $insumo);
  
   $app->get('/', function () use ($app) {
 	 

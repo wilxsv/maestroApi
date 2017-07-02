@@ -28,7 +28,7 @@
         'insumo' => array(
             'driver'    => 'pdo_pgsql',
             'host'      => '127.0.0.1',
-            'dbname'    => 'maestroinsumo',
+            'dbname'    => 'mi',
             'user'      => 'dtic',
             'password'  => 'dtic',
     'charset'  => 'utf8',

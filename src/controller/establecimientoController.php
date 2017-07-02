@@ -1,10 +1,9 @@
 <?php
 
  /*
-  * Consultas a servicios generales
+  * Consultas a servicios relacionados a establecimientos
   *
   */
- $maestro_data = 
  $establecimiento = $app['controllers_factory'];
  
  //Listado de establecimientos
