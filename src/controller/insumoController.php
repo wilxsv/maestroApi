@@ -25,22 +25,30 @@
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $idPrograma = '';
 	 if ( !empty($_GET['idPrograma']) && is_numeric($_GET['idPrograma']) ){
-		 $idPrograma = 'AND ctl_programaid = '.$_GET['idPrograma'];
+		 $idPrograma = 'AND i.ctl_programaid = '.$_GET['idPrograma'];
 	 }
 	 $idNivelUso = '';
 	 if ( !empty($_GET['idNivelUso']) && is_numeric($_GET['idNivelUso']) ){
-		 $idNivelUso = 'AND ctl_nivel_usoid = '.$_GET['idNivelUso'];
+		 $idNivelUso = 'AND i.ctl_nivel_usoid = '.$_GET['idNivelUso'];
 	 }
 	 $idGrupo = '';
 	 if ( !empty($_GET['idGrupo']) && is_numeric($_GET['idGrupo']) ){
-		 $idGrupo = 'AND grupoid = '.$_GET['idGrupo'];
+		 $idGrupo = 'AND i.grupoid = '.$_GET['idGrupo'];
+	 }
+	 $idTipo = '';
+	 if ( !empty($_GET['idTipo']) && is_numeric($_GET['idTipo']) ){
+		 $idGrupo = 'AND s.id = '.$_GET['idTipo'];
 	 }
 	 $idUnidad = '';
 	 if ( !empty($_GET['idUnidad']) && is_numeric($_GET['idUnidad']) ){
-		 $idUnidad = 'AND ctl_unidad_medidaid = '.$_GET['idUnidad'];
+		 $idUnidad = 'AND i.ctl_unidad_medidaid = '.$_GET['idUnidad'];
 	 }
-	 $select = "id, codigo_sinab, codigo_nu, grupoid, nombre_largo_insumo, ctl_nivel_usoid AS nivel_uso, ctl_presentacionid AS presentacion_id, listado_oficial";
-	 $sql = "SELECT $select FROM ctl_insumo WHERE enable_schema = 1 $idGrupo $idPrograma $idNivelUso $idUnidad";
+	 $select = "i.id, i.codigo_sinab, i.codigo_nu, i.grupoid, i.nombre_largo_insumo, i.ctl_nivel_usoid AS nivel_uso, i.ctl_presentacionid AS presentacion_id, i.listado_oficial, g.nombre_grupo, s.nombre_suministro";
+	 $sql = "SELECT $select
+		FROM ctl_insumo AS i
+		INNER JOIN ctl_grupo AS g ON i.grupoid = g.id
+		INNER JOIN ctl_suministro AS s ON g.suministro_id = s.id
+		WHERE i.enable_schema = 1 $idGrupo $idPrograma $idNivelUso $idUnidad";
 	 $array = $app['dbs']['insumo']->fetchAll($sql);
 	 return $app->json(array('respuesta' => $array), 201);
  });
