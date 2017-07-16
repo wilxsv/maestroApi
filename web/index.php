@@ -13,16 +13,19 @@
  use Symfony\Component\HttpFoundation\ParameterBag;
  
  $app = new Silex\Application();
+ $app['debug'] = true;
  $uri = '/v1/';
  
  require_once __DIR__.'/../src/controller/configController.php';
  require_once __DIR__.'/../src/controller/infoController.php';
  require_once __DIR__.'/../src/controller/establecimientoController.php';
  require_once __DIR__.'/../src/controller/insumoController.php';
+ require_once __DIR__.'/../src/controller/sinabController.php';
  
  $app->mount($uri.'info', $info);
  $app->mount($uri.'establecimientos', $establecimiento);
  $app->mount($uri.'insumos', $insumo);
+ $app->mount($uri.'sinab', $sinab);
  
   $app->get('/', function () use ($app) {
 	 
