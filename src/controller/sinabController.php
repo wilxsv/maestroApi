@@ -31,7 +31,6 @@
 	 }
 	 catch(PDOException $e) 
 	 { return 0; }
-	 
 	 //echo $app['dbs']['api']['_params']['driver'];
 	 
 	 return $app->json(array('respuesta' => $array_final), 201);

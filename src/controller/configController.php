@@ -4,8 +4,8 @@
   * Configuraciones generales de la aplicacion
   *
   */
-  
- $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
+
+ $provider = array(
     'dbs.options' => array (
         'api' => array(
             'driver'    => 'pdo_pgsql',
@@ -37,7 +37,8 @@
             'password'  => 'passwd',
         ),
     ),
- ));
+ );
+ $app->register(new Silex\Provider\DoctrineServiceProvider(), $provider);
  
  $app->register(new Silex\Provider\MonologServiceProvider(), array(
     'monolog.logfile' => __DIR__.'/development.log',
