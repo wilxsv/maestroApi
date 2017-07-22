@@ -12,6 +12,7 @@
  use Doctrine\Common\ClassLoader;
  use Symfony\Component\HttpFoundation\ParameterBag;
  
+ 
  $app = new Silex\Application();
  $app['debug'] = true;
  $uri = '/v1/';
