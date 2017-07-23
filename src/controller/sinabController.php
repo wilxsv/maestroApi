@@ -247,9 +247,10 @@
  $sinab->get('/lotesmedicamentos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
 	 $acceso = $app['autentica'];
+	 $anyo = date("Y")-1;
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = "lotes.IDLOTE,lotes.IDUNIDADMEDIDA,lotes.IDPRODUCTO,lotes.CODIGO,lotes.FECHAVENCIMIENTO,lotes.PRECIOLOTE ";
-	 $sql = " SELECT $select FROM SAB_ALM_LOTES AS lotes JOIN SAB_CAT_CATALOGOPRODUCTOS As productos ON lotes.IDPRODUCTO=productos.IDPRODUCTO JOIN SAB_CAT_SUBGRUPOS AS sub ON productos.IDTIPOPRODUCTO=sub.IDGRUPO JOIN SAB_CAT_GRUPOS AS g ON sub.IDGRUPO=G.IDGRUPO JOIN SAB_CAT_SUMINISTROS AS s ON g.IDSUMINISTRO=s.IDSUMINISTRO WHERE lotes.AUFECHACREACION >= '2016/01/01' AND s.IDSUMINISTRO=1 ORDER BY lotes.IDLOTE";
+	 $sql = " SELECT $select FROM SAB_ALM_LOTES AS lotes JOIN SAB_CAT_CATALOGOPRODUCTOS As productos ON lotes.IDPRODUCTO=productos.IDPRODUCTO JOIN SAB_CAT_SUBGRUPOS AS sub ON productos.IDTIPOPRODUCTO=sub.IDGRUPO JOIN SAB_CAT_GRUPOS AS g ON sub.IDGRUPO=G.IDGRUPO JOIN SAB_CAT_SUMINISTROS AS s ON g.IDSUMINISTRO=s.IDSUMINISTRO WHERE lotes.AUFECHACREACION >= '%$anyo' AND s.IDSUMINISTRO=1 ORDER BY lotes.IDLOTE";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
@@ -273,9 +274,10 @@
  $sinab->get('/estimacionesmedicamentos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
 	 $acceso = $app['autentica'];
+	 $anyo = date("Y")-1;
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = "IDPROGRAMACION, DESCRIPCION";
-	 $sql = " SELECT $select FROM SAB_URMIM_PROGRAMACION WHERE FECHAPROGRAMACION = '2016/01/01' AND IDSUMINISTRO = '1'";
+	 $sql = " SELECT $select FROM SAB_URMIM_PROGRAMACION WHERE FECHAPROGRAMACION = '%$anyo' AND IDSUMINISTRO = '1'";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
