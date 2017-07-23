@@ -218,15 +218,14 @@
  $sinab->get('/proveedoresporcontratos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
 	 $contrato = '';
-	 if ( !empty($_GET['contrato']) && is_numeric($_GET['contrato']) ){
-		 $contrato = 'WHERE C.NUMEROCONTRATO = '.$_GET['contrato'];
+	 if ( !empty($_GET['contrato']) ){
+		 $contrato = "WHERE C.NUMEROCONTRATO LIKE '".$_GET['contrato']."'";
 	 }
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $select = " P.IDPROVEEDOR, P.CODIGOPROVEEDOR, P.NOMBRE, P.NIT ";
-	 $sql = " SELECT $select FROM [dbo].[SAB_UACI_CONTRATOS] AS C INNER JOIN [dbo].[SAB_CAT_PROVEEDORES] AS P ON C.IDPROVEEDOR=P.IDPROVEEDOR $contrato GROUP BY P.IDPROVEEDOR, P.CODIGOPROVEEDOR, P.NOMBRE, P.NIT ";
+	 $select = " DISTINCT P.IDPROVEEDOR,P.NOMBRE AS nombre ,P.nit AS nit, P.CODIGOPROVEEDOR ";
+	 $sql = " SELECT $select from SAB_CAT_PROVEEDORES as P join SAB_UACI_CONTRATOS as C on C.IDPROVEEDOR=P.IDPROVEEDOR $contrato";
 	 $array_final = array();
-	 echo $sql;
 	 try {
 		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
