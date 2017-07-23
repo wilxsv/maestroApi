@@ -447,7 +447,7 @@
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = " DISTINCT pc.IDPRODUCTO, pc.IDPROVEEDOR, pc.IDCONTRATO, pc.CANTIDAD, pc.PRECIOUNITARIO ";
-	 $sql = " SELECT $select from 
+	 $sql = " SELECT $select 
        FROM SAB_UACI_PRODUCTOSCONTRATO AS pc JOIN SAB_CAT_CATALOGOPRODUCTOS As productos on productos.IDPRODUCTO=pc.IDPRODUCTO 
 JOIN SAB_CAT_SUBGRUPOS AS sub ON productos.IDTIPOPRODUCTO=sub.IDGRUPO 
 JOIN SAB_CAT_GRUPOS AS g ON sub.IDGRUPO=G.IDGRUPO 
