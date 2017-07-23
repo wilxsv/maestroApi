@@ -244,7 +244,7 @@
 	 return $app->json(array('respuesta' => $array_final), 201);
  });
  //Listado de lotes solamente de medicamentos
- $sinab->get('/proveedoresporcontratos', function () use ($app) {
+ $sinab->get('/lotesmedicamentos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
@@ -268,4 +268,32 @@
 	 { return 0; }	 
 	 return $app->json(array('respuesta' => $array_final), 201);
  });
+
+ //Listado de Programaciones o estimacion de necesidades solo de medicamentos
+ $sinab->get('/estimacionesmedicamentos', function () use ($app) {
+	 $tocken = $_GET["tocken"];
+	 $acceso = $app['autentica'];
+	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
+	 $select = "IDPROGRAMACION, DESCRIPCION";
+	 $sql = " SELECT $select FROM SAB_URMIM_PROGRAMACION WHERE FECHAPROGRAMACION = '2016/01/01' AND IDSUMINISTRO = '1'";
+	 $array_final = array();
+	 try {
+		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
+			 die('algo paso con MSSQL');
+		 }
+		 else
+		 {
+			 $query = mssql_query($sql);
+			 while ($row = mssql_fetch_array($query)) {
+				array_push($array_final, $row );
+			 }			 
+		 }
+	 }
+	 catch(PDOException $e) 
+	 { return 0; }	 
+	 return $app->json(array('respuesta' => $array_final), 201);
+ });
+
+
 ?>
