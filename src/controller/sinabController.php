@@ -408,7 +408,7 @@
 	 $tocken = $_GET["tocken"];
 	 $programacion = '';
 	 if ( !empty($_GET['programacion']) ){
-		 $programacion =  "PPE.IDPROGRAMACION =".$_GET['programacion']."'";
+		 $programacion =  "WHERE PPE.IDPROGRAMACION =".$_GET['programacion']."'";
 	 }
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
