@@ -440,4 +440,35 @@
 	 { return 0; }	 
 	 return $app->json(array('respuesta' => $array_final), 201);
  });
+
+ //Listado de medicamentos por contratos
+ $sinab->get('/medicamentoscontratos', function () use ($app) {
+	 $tocken = $_GET["tocken"];
+	 $acceso = $app['autentica'];
+	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
+	 $select = " DISTINCT pc.IDPRODUCTO, pc.IDPROVEEDOR, pc.IDCONTRATO, pc.CANTIDAD, pc.PRECIOUNITARIO ";
+	 $sql = " SELECT $select from 
+       FROM SAB_UACI_PRODUCTOSCONTRATO AS pc JOIN SAB_CAT_CATALOGOPRODUCTOS As productos on productos.IDPRODUCTO=pc.IDPRODUCTO 
+JOIN SAB_CAT_SUBGRUPOS AS sub ON productos.IDTIPOPRODUCTO=sub.IDGRUPO 
+JOIN SAB_CAT_GRUPOS AS g ON sub.IDGRUPO=G.IDGRUPO 
+JOIN SAB_CAT_SUMINISTROS AS s ON g.IDSUMINISTRO=s.IDSUMINISTRO 
+WHERE s.IDSUMINISTRO=1";
+	 $array_final = array();
+	 try {
+		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
+			 die('algo paso con MSSQL');
+		 }
+		 else
+		 {
+			 $query = mssql_query($sql);
+			 while ($row = mssql_fetch_array($query)) {
+				array_push($array_final, $row );
+			 }			 
+		 }
+	 }
+	 catch(PDOException $e) 
+	 { return 0; }	 
+	 return $app->json(array('respuesta' => $array_final), 201);
+ });
 ?>
