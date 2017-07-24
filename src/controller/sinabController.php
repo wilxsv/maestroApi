@@ -351,31 +351,6 @@
 	 return $app->json(array('respuesta' => $array_final), 201);
  });
 
- //Listado de ALMACENES
- $sinab->get('/medicamentos', function () use ($app) {
-	 $tocken = $_GET["tocken"];
-	 $acceso = $app['autentica'];
-	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $select = "IDALMACEN, NOMBRE, DIRECCION";
-	 $sql = " SELECT $select FROM SAB_CAT_ALMACENES";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
- });
 //Listado de ALMACENES
  $sinab->get('/medicamentos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
@@ -408,7 +383,7 @@
 	 $tocken = $_GET["tocken"];
 	 $programacion = '';
 	 if ( !empty($_GET['programacion']) && !empty($_GET['contrato'])){
-	 	$programacion = "WHILE PPE.IDPROGRAMACION=".$_GET['programacion']." AND pro.IDCONTRATO =".$_GET['contrato'];
+	 	$programacion = "WHERE PPE.IDPROGRAMACION=".$_GET['programacion']." AND pro.IDCONTRATO =".$_GET['contrato'];
 	 }
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
