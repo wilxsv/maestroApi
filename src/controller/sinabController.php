@@ -408,12 +408,12 @@
 	 $tocken = $_GET["tocken"];
 	 $programacion = '';
 	 if ( !empty($_GET['programacion']) && !empty($_GET['contrato'])){
-	 	$programacion = "PPE.IDPROGRAMACION=".$_GET['programacion']." AND pro.IDCONTRATO =".$_GET['contrato'];
+	 	$programacion = "WHILE PPE.IDPROGRAMACION=".$_GET['programacion']." AND pro.IDCONTRATO =".$_GET['contrato'];
 	 }
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $select = " DISTINCT  PPE.IDPROGRAMACION, PPE.IDPRODUCTO ";
-	 $sql = " SELECT $select from 
+	 $select = "DISTINCT PPE.IDPROGRAMACION, PPE.IDPRODUCTO ";
+	 $sql = "SELECT $select from 
        SAB_URMIM_PROGRAMACIONPRODUCTOESTABLECIMIENTO PPE 
     	inner join vv_CATALOGOPRODUCTOS CP 
     	  ON PPE.IDPRODUCTO = CP.IDPRODUCTO 
