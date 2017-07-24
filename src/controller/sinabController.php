@@ -407,7 +407,7 @@
  $sinab->get('/medicamentosestimacion', function () use ($app) {
 	 $tocken = $_GET["tocken"];
 	 $programacion = '';
-	 if ( !empty($_GET['programacion'] && !empty($_GET['contrato']){
+	 if ( !empty($_GET['programacion']) && !empty($_GET['contrato'])){
 	 	$programacion = "PPE.IDPROGRAMACION=".$_GET['programacion'] " AND pro.IDCONTRATO =".$_GET['contrato'];
 	 }
 	 $acceso = $app['autentica'];
