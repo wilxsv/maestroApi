@@ -28,6 +28,13 @@
             'user'      => 'dtic',
             'password'  => 'dtic',
         ),
+        'consumo' => array(
+            'driver'    => 'pdo_pgsql',
+            'host'      => '127.0.0.1',
+            'dbname'    => 'c',
+            'user'      => 'dtic',
+            'password'  => 'dtic',
+        ),
         'sinab' => array(
             'driver'    => 'PDO_SQLSRV',
             'host'      => '127.0.0.1',

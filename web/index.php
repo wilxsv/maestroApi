@@ -22,11 +22,13 @@
  require_once __DIR__.'/../src/controller/establecimientoController.php';
  require_once __DIR__.'/../src/controller/insumoController.php';
  require_once __DIR__.'/../src/controller/sinabController.php';
+ require_once __DIR__.'/../src/controller/consumoController.php';
  
  $app->mount($uri.'info', $info);
  $app->mount($uri.'establecimientos', $establecimiento);
  $app->mount($uri.'insumos', $insumo);
  $app->mount($uri.'sinab', $sinab);
+ $app->mount($uri.'consumos', $sinab);
  
   $app->get('/', function () use ($app) {
 	 
