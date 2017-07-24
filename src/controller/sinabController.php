@@ -387,7 +387,7 @@
 	 }
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $select = "DISTINCT PPE.IDPROGRAMACION, PPE.IDPRODUCTO ";
+	 $select = "DISTINCT PPE.IDPROGRAMACION, PPE.IDPRODUCTO, pro.IDCONTRATO ";
 	 $sql = "SELECT $select from 
        SAB_URMIM_PROGRAMACIONPRODUCTOESTABLECIMIENTO PPE 
     	inner join vv_CATALOGOPRODUCTOS CP 
