@@ -407,8 +407,8 @@
  $sinab->get('/medicamentosestimacion', function () use ($app) {
 	 $tocken = $_GET["tocken"];
 	 $programacion = '';
-	 if ( !empty($_GET['programacion']) ){
-		 $programacion =  "WHERE PPE.IDPROGRAMACION =".$_GET['programacion'];
+	 if ( !empty($_GET['programacion'] && !empty($_GET['contrato']) ){
+	 	$programacion = "PPE.IDPROGRAMACION=".$_GET['programacion'] " AND pro.IDCONTRATO =".$_GET['contrato'];
 	 }
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
@@ -421,7 +421,8 @@
     	  ON PPE.IDPROGRAMACION = PP.IDPROGRAMACION AND 
     		 PPE.IDPRODUCTO = PP.IDPRODUCTO 
     	inner join SAB_URMIM_PROGRAMACION P 
-    	  ON PP.IDPROGRAMACION = P.IDPROGRAMACION $programacion";
+    	  ON PP.IDPROGRAMACION = P.IDPROGRAMACION
+JOIN  SAB_UACI_PRODUCTOSCONTRATO as pro on pro.IDPRODUCTO = PPE.IDPRODUCTO $programacion";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
