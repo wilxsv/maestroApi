@@ -28,7 +28,7 @@
  $app->mount($uri.'establecimientos', $establecimiento);
  $app->mount($uri.'insumos', $insumo);
  $app->mount($uri.'sinab', $sinab);
- $app->mount($uri.'consumos', $sinab);
+ $app->mount($uri.'consumos', $consumo);
  
   $app->get('/', function () use ($app) {
 	 
