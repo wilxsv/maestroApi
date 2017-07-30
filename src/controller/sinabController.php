@@ -447,4 +447,40 @@ WHERE s.IDSUMINISTRO=1";
 	 { return 0; }	 
 	 return $app->json(array('respuesta' => $array_final), 201);
  });
+
+ //Existencias de productos por establecimiento
+ $sinab->get('/existenciaporestablecimiento', function () use ($app) {
+	 $tocken = $_GET["tocken"];
+	 $acceso = $app['autentica'];
+	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
+	 
+	 $arr = explode(',', $_GET['ids']);
+	 foreach ($arr as $val) {
+		 if (!is_numeric($val))
+		 return $app->json(array('error' => 'No interpreto bien tu pregunta.'), 404);
+	 }
+	 $ids = $_GET['ids'];
+	 $select = " IDESTABLECIMIENTO AS establecimiento, IDPRODUCTO AS producto, existencia AS existencia ";
+	 $sql = " SELECT $select 
+       FROM vv_EXISTENCIASESTABLECIMIENTOS
+       WHERE IDESTABLECIMIENTO IN ( $ids )";
+	 $array_final = array();
+	 try {
+		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
+			 die('algo paso con MSSQL');
+		 }
+		 else
+		 {
+			 $query = mssql_query($sql);
+			 while ($row = mssql_fetch_array($query)) {
+				array_push($array_final, $row );
+			 }			 
+		 }
+	 }
+	 catch(PDOException $e) 
+	 { return 0; }	 
+	 return $app->json(array('respuesta' => $array_final), 201);
+ });
+
 ?>
