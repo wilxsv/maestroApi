@@ -27,6 +27,7 @@
  $app->mount($uri.'info', $info);
  $app->mount($uri.'establecimientos', $establecimiento);
  $app->mount($uri.'insumos', $insumo);
+ $app->mount($uri.'suministros', $insumo);
  $app->mount($uri.'sinab', $sinab);
  $app->mount($uri.'consumos', $consumo);
  
