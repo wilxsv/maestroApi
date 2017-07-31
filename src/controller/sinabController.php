@@ -483,4 +483,47 @@ WHERE s.IDSUMINISTRO=1";
 	 return $app->json(array('respuesta' => $array_final), 201);
  });
 
+//Analisis de cobertura por medicamento a nivel nacional
+ $sinab->get('/datoscobertura', function () use ($app) {
+	 $tocken = $_GET["tocken"];
+	 $producto = $_GET["idproducto"];
+	 $programacion = $_GET["programacion"];
+	 $acceso = $app['autentica'];
+	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
+	 $select = " CP.IDPRODUCTO,CP.DESCLARGO, CP.CLASIFICACION,UM.DESCRIPCION UNIDADMEDIDA,
+       PPE.IDPROGRAMACION,SUM(PPE.COMPRATRANSITO) COMPRATRANSITO, SUM(PPE.CONSUMOPROMEDIOAJUSTADO)CONSUMOPROMEDIOAJUSTADO, SUM(E.CANTIDADDISPONIBLE) EXISTENCIAS ";
+	 $sql = " SELECT $select 
+       FROM  SAB_URMIM_PROGRAMACIONPRODUCTOESTABLECIMIENTO PPE 
+      inner join vv_CATALOGOPRODUCTOS CP 
+        ON PPE.IDPRODUCTO = CP.IDPRODUCTO 
+      inner join SAB_URMIM_PROGRAMACIONPRODUCTO PP 
+        ON PPE.IDPROGRAMACION = PP.IDPROGRAMACION AND 
+         PPE.IDPRODUCTO = PP.IDPRODUCTO 
+      inner join SAB_URMIM_PROGRAMACION P 
+        ON PP.IDPROGRAMACION = P.IDPROGRAMACION
+      inner join SAB_ALM_EXISTENCIASALMACENES E
+        ON E.IDPRODUCTO = CP.IDPRODUCTO
+      inner join SAB_CAT_UNIDADMEDIDAS UM
+        ON UM.IDUNIDADMEDIDA=CP.IDUNIDADMEDIDA WHERE PPE.IDPROGRAMACION = $programacion
+     AND E.CANTIDADDISPONIBLE >= 0
+     AND CP.IDPRODUCTO=$producto GROUP BY CP.IDPRODUCTO,CP.CLASIFICACION,PPE.IDPROGRAMACION, PPE.IDPRODUCTO,CP.DESCLARGO,UM.DESCRIPCION";
+	 $array_final = array();
+	 try {
+		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
+			 die('algo paso con MSSQL');
+		 }
+		 else
+		 {
+			 $query = mssql_query($sql);
+			 while ($row = mssql_fetch_array($query)) {
+				array_push($array_final, $row );
+			 }			 
+		 }
+	 }
+	 catch(PDOException $e) 
+	 { return 0; }	 
+	 return $app->json(array('respuesta' => $array_final), 201);
+ });
+
 ?>
