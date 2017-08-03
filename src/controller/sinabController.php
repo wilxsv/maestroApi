@@ -276,7 +276,7 @@
  $sinab->get('/estimacionesmedicamentos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
 	 $acceso = $app['autentica'];
-		 $anyomin 	= date('Y',, strtotime('-1 year'));
+		 $anyomin 	= date('Y', strtotime('-1 year'));
 		 $anyomax = date('Y');
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = "IDPROGRAMACION, DESCRIPCION";
