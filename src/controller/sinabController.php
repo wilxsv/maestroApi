@@ -12,7 +12,7 @@
 	 
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $anyo = date("Y")-1;
+	 $anyo = date('Y', strtotime('-1 year'))
 	 $select = " NUMEROCONTRATO, IDPROVEEDOR, IDESTABLECIMIENTO, IDCONTRATO, NUMEROMODALIDADCOMPRA,	MONTOCONTRATO ";
 	 $sql = "SELECT $select FROM [dbo].[SAB_UACI_CONTRATOS] WHERE [IDTIPODOCUMENTO] = '1' AND  [NUMEROCONTRATO] LIKE '%$anyo' ORDER BY [FECHAGENERACION] DESC";
 	 $array_final = array();
@@ -276,10 +276,11 @@
  $sinab->get('/estimacionesmedicamentos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
 	 $acceso = $app['autentica'];
-	 $anyo = date("Y")-1;
+		 $anyomin 	= date('Y',, strtotime('-1 year'));
+		 $anyomax = date('Y');
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = "IDPROGRAMACION, DESCRIPCION";
-	 $sql = " SELECT $select FROM SAB_URMIM_PROGRAMACION WHERE FECHAPROGRAMACION =  '2016/01/01' AND IDSUMINISTRO = '1'";
+	 $sql = " SELECT $select FROM SAB_URMIM_PROGRAMACION AUFECHACREACION >= '2015/01/01' AND AUFECHACREACION <= '2015/12/31' AND IDSUMINISTRO = '1'";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
@@ -331,7 +332,7 @@
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = "DISTINCT p.IDPRODUCTO, p.CODIGO, p.NOMBRE, p.IDUNIDADMEDIDA, p.CONCENTRACION,p.PRESENTACION";
-	 $sql = " SELECT $select FROM SAB_CAT_CATALOGOPRODUCTOS AS p JOIN SAB_CAT_SUBGRUPOS AS sub ON sub.IDGRUPO=p.IDTIPOPRODUCTO JOIN SAB_CAT_GRUPOS AS g ON sub.IDGRUPO=G.IDGRUPO JOIN SAB_CAT_SUMINISTROS AS s ON g.IDSUMINISTRO=s.IDSUMINISTRO WHERE s.IDSUMINISTRO=1 ORDER BY p.NOMBRE";
+	 $sql = " SELECT $select FROM SAB_CAT_CATALOGOPRODUCTOS AS p JOIN SAB_CAT_SUBGRUPOS AS sub ON sub.IDGRUPO=p.IDTIPOPRODUCTO JOIN SAB_CAT_GRUPOS AS g ON sub.IDGRUPO=G.IDGRUPO JOIN SAB_CAT_SUMINISTROS AS s ON g.IDSUMINISTRO=s.IDSUMINISTRO ORDER BY p.NOMBRE";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
@@ -352,7 +353,7 @@
  });
 
 //Listado de ALMACENES
- $sinab->get('/medicamentos', function () use ($app) {
+ $sinab->get('/almacenes', function () use ($app) {
 	 $tocken = $_GET["tocken"];
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
