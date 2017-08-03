@@ -276,11 +276,11 @@
  $sinab->get('/estimacionesmedicamentos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
 	 $acceso = $app['autentica'];
-		 $anyomin 	= date('Y', strtotime('-1 year'));
-		 $anyomax = date('Y');
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = "IDPROGRAMACION, DESCRIPCION";
-	 $sql = " SELECT $select FROM SAB_URMIM_PROGRAMACION AUFECHACREACION >= '2015/01/01' AND AUFECHACREACION <= '2015/12/31' AND IDSUMINISTRO = '1'";
+	 $sql = "SELECT IDPROGRAMACION, DESCRIPCION
+FROM SAB_URMIM_PROGRAMACION
+WHERE AUFECHACREACION >= '2015/01/01' AND AUFECHACREACION <= '2015/12/31' AND IDSUMINISTRO = '1'";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
