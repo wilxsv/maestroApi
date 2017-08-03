@@ -527,4 +527,44 @@ WHERE s.IDSUMINISTRO=1";
 	 return $app->json(array('respuesta' => $array_final), 201);
  });
 
+ //Existencias de productos por establecimiento filtrado por fecha de caducidad
+ $sinab->get('/existenciaporestablecimientoporcaducidad', function () use ($app) {
+	 $tocken = $_GET["tocken"];
+	 $acceso = $app['autentica'];
+	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
+	 
+	 $arr = explode(',', $_GET['ids']);
+	 foreach ($arr as $val) {
+		 if (!is_numeric($val))
+		 return $app->json(array('error' => 'No interpreto bien tu pregunta.'), 404);
+	 }
+	 $fecha = "";
+	 if ( !empty($_GET['fecha'])  ){
+		 $fecha = "AND (FECHAVENCIMIENTO >= '".$_GET['fecha']."')";
+	 }
+	 $ids = $_GET['ids'];
+	 
+	 $select = "  AE.IDESTABLECIMIENTO AS establecimiento, AL.IDPRODUCTO AS producto, SUM(CANTIDADDISPONIBLE) AS existencia ";
+	 $sql = " SELECT $select 
+       FROM SAB_ALM_LOTES AS AL INNER JOIN SAB_CAT_ALMACENESESTABLECIMIENTOS AE ON AL.IDALMACEN = AE.IDALMACEN
+       WHERE  (ESTADISPONIBLE = 1) $fecha AND AE.IDESTABLECIMIENTO IN ( $ids )
+       GROUP BY AE.IDESTABLECIMIENTO, AL.IDPRODUCTO ORDER BY AE.IDESTABLECIMIENTO, AL.IDPRODUCTO";
+	 $array_final = array();
+	 try {
+		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
+			 die('algo paso con MSSQL');
+		 }
+		 else
+		 {
+			 $query = mssql_query($sql);
+			 while ($row = mssql_fetch_array($query)) {
+				array_push($array_final, $row );
+			 }			 
+		 }
+	 }
+	 catch(PDOException $e) 
+	 { return 0; }	 
+	 return $app->json(array('respuesta' => $array_final), 201);
+ });
 ?>
