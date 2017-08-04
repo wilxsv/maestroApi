@@ -417,15 +417,13 @@ JOIN  SAB_UACI_PRODUCTOSCONTRATO as pro on pro.IDPRODUCTO = PPE.IDPRODUCTO $prog
  //Listado de medicamentos por contratos
  $sinab->get('/medicamentoscontratos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
+	 $anyo = date('Y', strtotime('-1 year'));
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = " DISTINCT pc.IDPRODUCTO, pc.IDPROVEEDOR, pc.IDCONTRATO, pc.CANTIDAD, pc.PRECIOUNITARIO ";
 	 $sql = " SELECT $select 
-       FROM SAB_UACI_PRODUCTOSCONTRATO AS pc JOIN SAB_CAT_CATALOGOPRODUCTOS As productos on productos.IDPRODUCTO=pc.IDPRODUCTO 
-JOIN SAB_CAT_SUBGRUPOS AS sub ON productos.IDTIPOPRODUCTO=sub.IDGRUPO 
-JOIN SAB_CAT_GRUPOS AS g ON sub.IDGRUPO=G.IDGRUPO 
-JOIN SAB_CAT_SUMINISTROS AS s ON g.IDSUMINISTRO=s.IDSUMINISTRO 
-WHERE s.IDSUMINISTRO=1";
+       FROM SAB_UACI_PRODUCTOSCONTRATO as pc inner JOIN SAB_UACI_CONTRATOS as c ON c.IDCONTRATO=pc.IDCONTRATO
+WHERE c.NUMEROCONTRATO LIKE '%$anyo%'";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
