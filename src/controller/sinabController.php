@@ -217,14 +217,10 @@
   //Listado de proveedores por id contrato
  $sinab->get('/proveedoresporcontratos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
-	 $contrato = '';
-	 if ( !empty($_GET['contrato']) ){
-		 $contrato = "WHERE C.NUMEROCONTRATO LIKE '".$_GET['contrato']."'";
-	 }
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = " DISTINCT P.IDPROVEEDOR,P.NOMBRE AS nombre ,P.nit AS nit, P.CODIGOPROVEEDOR ";
-	 $sql = " SELECT $select from SAB_CAT_PROVEEDORES as P join SAB_UACI_CONTRATOS as C on C.IDPROVEEDOR=P.IDPROVEEDOR $contrato";
+	 $sql = " SELECT $select from SAB_CAT_PROVEEDORES as P";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
