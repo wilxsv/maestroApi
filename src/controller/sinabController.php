@@ -326,9 +326,10 @@ WHERE AUFECHACREACION >= '2016/01/01' AND AUFECHACREACION <= '2016/12/31' AND ID
  $sinab->get('/medicamentos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
 	 $acceso = $app['autentica'];
+	 $suministro = $_GET["suministro"];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $select = "p.IDPRODUCTO, p.CODIGO, p.NOMBRE, p.IDUNIDADMEDIDA";
-	 $sql = " SELECT $select FROM SAB_CAT_CATALOGOPRODUCTOS AS p";
+	 $select = "p.IDPRODUCTO, p.CORRPRODUCTO, p.DESCPRODUCTO as NOMBRE, p.IDUNIDADMEDIDA";
+	 $sql = " SELECT $select FROM  vv_CATALOGOPRODUCTOS as p WHERE p.IDSUMINISTRO = $suministro";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
