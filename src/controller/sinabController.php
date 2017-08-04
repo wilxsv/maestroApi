@@ -384,7 +384,7 @@ WHERE AUFECHACREACION >= '2016/01/01' AND AUFECHACREACION <= '2016/12/31' AND ID
 	 }
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $select = "DISTINCT PPE.IDPROGRAMACION, PPE.IDPRODUCTO, pro.IDCONTRATO ";
+	 $select = "DISTINCT PPE.IDPROGRAMACION, PPE.IDPRODUCTO, pro.IDCONTRATO,CP.NOMBRE ";
 	 $sql = "SELECT $select from 
        SAB_URMIM_PROGRAMACIONPRODUCTOESTABLECIMIENTO PPE 
     	inner join SAB_CAT_CATALOGOPRODUCTOS CP 
