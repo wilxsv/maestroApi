@@ -327,7 +327,7 @@ WHERE AUFECHACREACION >= '2016/01/01' AND AUFECHACREACION <= '2016/12/31' AND ID
 	 $tocken = $_GET["tocken"];
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $select = "DISTINCT p.IDPRODUCTO, p.CODIGO, p.NOMBRE, p.IDUNIDADMEDIDA, p.CONCENTRACION,p.PRESENTACION";
+	 $select = "p.IDPRODUCTO, p.CODIGO, p.NOMBRE, p.IDUNIDADMEDIDA";
 	 $sql = " SELECT $select FROM SAB_CAT_CATALOGOPRODUCTOS AS p";
 	 $array_final = array();
 	 try {
