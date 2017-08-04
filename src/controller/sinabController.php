@@ -381,7 +381,7 @@ WHERE AUFECHACREACION >= '2016/01/01' AND AUFECHACREACION <= '2016/12/31' AND ID
 	 $tocken = $_GET["tocken"];
 	 $programacion = '';
 	 if ( !empty($_GET['programacion']) && !empty($_GET['contrato'])){
-	 	$programacion = "WHERE PPE.IDPROGRAMACION=".$_GET['programacion']." AND pro.IDCONTRATO =".$_GET['contrato'];
+	 	$programacion = "WHERE PPE.IDPROGRAMACION=".$_GET['programacion']." AND pro.IDCONTRATO =".$_GET['contrato']." AND pro.IDPROVEEDOR = ".$_GET['proveedor'];
 	 }
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
