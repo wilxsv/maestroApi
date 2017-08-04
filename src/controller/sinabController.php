@@ -328,7 +328,7 @@ WHERE AUFECHACREACION >= '2016/01/01' AND AUFECHACREACION <= '2016/12/31' AND ID
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = "DISTINCT p.IDPRODUCTO, p.CODIGO, p.NOMBRE, p.IDUNIDADMEDIDA, p.CONCENTRACION,p.PRESENTACION";
-	 $sql = " SELECT $select FROM SAB_CAT_CATALOGOPRODUCTOS AS p JOIN SAB_CAT_SUBGRUPOS AS sub ON sub.IDGRUPO=p.IDTIPOPRODUCTO JOIN SAB_CAT_GRUPOS AS g ON sub.IDGRUPO=G.IDGRUPO JOIN SAB_CAT_SUMINISTROS AS s ON g.IDSUMINISTRO=s.IDSUMINISTRO ORDER BY p.NOMBRE";
+	 $sql = " SELECT $select FROM SAB_CAT_CATALOGOPRODUCTOS AS p";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
