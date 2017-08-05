@@ -14,7 +14,7 @@
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $anyo = date('Y', strtotime('-1 year'));
 	 $select = " NUMEROCONTRATO, IDPROVEEDOR, IDESTABLECIMIENTO, IDCONTRATO, NUMEROMODALIDADCOMPRA,	MONTOCONTRATO ";
-	 $sql = "SELECT $select FROM [dbo].[SAB_UACI_CONTRATOS] WHERE [IDTIPODOCUMENTO] = '2' AND  [NUMEROCONTRATO] LIKE '%$anyo' ORDER BY [FECHAGENERACION] DESC";
+	 $sql = "SELECT $select FROM [dbo].[SAB_UACI_CONTRATOS] WHERE [IDTIPODOCUMENTO] = '2' AND NUMEROCONTRATO LIKE '%$anyo%' AND AUFECHACREACION >= '$anyo' ORDER BY [FECHAGENERACION] DESC";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
