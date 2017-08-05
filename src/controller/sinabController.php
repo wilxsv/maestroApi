@@ -12,7 +12,7 @@
 	 
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $anyo = date('Y', strtotime('-0 year'));
+	 $anyo = date('Y', strtotime('-1 year'));
 	 $select = " NUMEROCONTRATO, IDPROVEEDOR, IDESTABLECIMIENTO, IDCONTRATO, NUMEROMODALIDADCOMPRA,	MONTOCONTRATO ";
 	 $sql = "SELECT $select FROM [dbo].[SAB_UACI_CONTRATOS] WHERE [IDTIPODOCUMENTO] = '2' AND  [NUMEROCONTRATO] LIKE '%$anyo' ORDER BY [FECHAGENERACION] DESC";
 	 $array_final = array();
@@ -275,8 +275,36 @@
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = "IDPROGRAMACION, DESCRIPCION";
 	 $sql = "SELECT IDPROGRAMACION, DESCRIPCION
-FROM SAB_URMIM_PROGRAMACION
-WHERE AUFECHACREACION >= '2015/01/01' AND AUFECHACREACION <= '2015/12/31' AND IDSUMINISTRO = '1'";
+	FROM SAB_URMIM_PROGRAMACION
+	WHERE AUFECHACREACION >= '2015/01/01' AND AUFECHACREACION <= '2015/12/31' AND IDSUMINISTRO = '1'";
+	 $array_final = array();
+	 try {
+		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
+			 die('algo paso con MSSQL');
+		 }
+		 else
+		 {
+			 $query = mssql_query($sql);
+			 while ($row = mssql_fetch_array($query)) {
+				array_push($array_final, $row );
+			 }			 
+		 }
+	 }
+	 catch(PDOException $e) 
+	 { return 0; }	 
+	 return $app->json(array('respuesta' => $array_final), 201);
+ });
+
+  //Listado de planificaciones de necesidades de los medicamentos
+ $sinab->get('/planificacionmedicamentos', function () use ($app) {
+	 $tocken = $_GET["tocken"];
+	 $acceso = $app['autentica'];
+	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
+	 $select = "IDPROGRAMACION, DESCRIPCION";
+	 $sql = "SELECT IDPROGRAMACION, DESCRIPCION
+	FROM SAB_URMIM_PROGRAMACION
+	WHERE AUFECHACREACION >= '2017/01/01' AND AUFECHACREACION <= '2017/12/31' AND IDSUMINISTRO = '1'";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
