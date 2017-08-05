@@ -566,4 +566,37 @@ AND c.AUFECHACREACION >= '2016/01/01' AND c.AUFECHACREACION <= '2016/12/31' AND 
 	 { return 0; }	 
 	 return $app->json(array('respuesta' => $array_final), 201);
  });
+
+ //existencias de medicamentos no vencidos por todos los establecimientos (sumatoria)
+ $sinab->get('/existencianacional', function () use ($app) {
+	 $tocken = $_GET["tocken"];
+	 $producto = $_GET["producto"];
+	 $fecha = $_GET["fecha"];
+	 $acceso = $app['autentica'];
+	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
+	 $select = "SUM(CANTIDADDISPONIBLE) AS existencia";
+	 $sql = " SELECT $select 
+     FROM SAB_ALM_LOTES AS AL INNER JOIN SAB_CAT_ALMACENESESTABLECIMIENTOS AE ON AL.IDALMACEN = AE.IDALMACEN
+       WHERE  (ESTADISPONIBLE = 1) AND (FECHAVENCIMIENTO >= '$fecha') AND AL.IDPRODUCTO = $producto
+       GROUP BY AL.IDPRODUCTO ORDER BY AL.IDPRODUCTO";
+	 $array_final = array();
+	 try {
+		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
+			 die('algo paso con MSSQL');
+		 }
+		 else
+		 {
+			 $query = mssql_query($sql);
+			 while ($row = mssql_fetch_array($query)) {
+				array_push($array_final, $row );
+			 }			 
+		 }
+	 }
+	 catch(PDOException $e) 
+	 { return 0; }	 
+	 return $app->json(array('respuesta' => $array_final), 201);
+ });
+
+
 ?>
