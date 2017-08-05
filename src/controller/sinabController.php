@@ -12,7 +12,7 @@
 	 
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $anyo = date('Y', strtotime('-1 year'));
+	 $anyo = date('Y', strtotime('-0 year'));
 	 $select = " NUMEROCONTRATO, IDPROVEEDOR, IDESTABLECIMIENTO, IDCONTRATO, NUMEROMODALIDADCOMPRA,	MONTOCONTRATO ";
 	 $sql = "SELECT $select FROM [dbo].[SAB_UACI_CONTRATOS] WHERE [IDTIPODOCUMENTO] = '2' AND  [NUMEROCONTRATO] LIKE '%$anyo' ORDER BY [FECHAGENERACION] DESC";
 	 $array_final = array();
@@ -276,7 +276,7 @@
 	 $select = "IDPROGRAMACION, DESCRIPCION";
 	 $sql = "SELECT IDPROGRAMACION, DESCRIPCION
 FROM SAB_URMIM_PROGRAMACION
-WHERE AUFECHACREACION >= '2016/01/01' AND AUFECHACREACION <= '2016/12/31' AND IDSUMINISTRO = '1'";
+WHERE AUFECHACREACION >= '2015/01/01' AND AUFECHACREACION <= '2015/12/31' AND IDSUMINISTRO = '1'";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
