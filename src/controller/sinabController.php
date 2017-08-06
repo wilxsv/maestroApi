@@ -17,7 +17,7 @@
 	 $sql = "SELECT $select FROM [dbo].[SAB_UACI_CONTRATOS] WHERE [IDTIPODOCUMENTO] = '2' AND NUMEROCONTRATO LIKE '%$anyo%' AND AUFECHACREACION >= '$anyo' ORDER BY [FECHAGENERACION] DESC";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -48,7 +48,7 @@
 	 $sql = "SELECT $select FROM [dbo].[SAB_CAT_ESTABLECIMIENTOS] ORDER BY [NOMBRE] DESC";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -76,7 +76,7 @@
 	 $sql = "SELECT $select FROM [dbo].[vv_CATALOGOPRODUCTOS] ORDER BY [DESCLARGO] DESC";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -104,7 +104,7 @@
 	 $sql = "SELECT $select FROM [dbo].[SAB_ALM_LOTES] ";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -197,7 +197,7 @@
      (PPE.IDESTABLECIMIENTO = @IDESTABLECIMIENTO OR @IDESTABLECIMIENTO = 0) ";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -223,7 +223,7 @@
 	 $sql = " SELECT $select from SAB_CAT_PROVEEDORES as P";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -251,7 +251,7 @@
 	 $sql = " SELECT $select FROM SAB_ALM_LOTES AS lotes JOIN SAB_CAT_CATALOGOPRODUCTOS As productos ON lotes.IDPRODUCTO=productos.IDPRODUCTO JOIN SAB_CAT_SUBGRUPOS AS sub ON productos.IDTIPOPRODUCTO=sub.IDGRUPO JOIN SAB_CAT_GRUPOS AS g ON sub.IDGRUPO=G.IDGRUPO JOIN SAB_CAT_SUMINISTROS AS s ON g.IDSUMINISTRO=s.IDSUMINISTRO WHERE lotes.AUFECHACREACION >= '2016/01/01' AND s.IDSUMINISTRO=1 ORDER BY lotes.IDLOTE";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -279,7 +279,7 @@
 	WHERE AUFECHACREACION >= '2015/01/01' AND AUFECHACREACION <= '2015/12/31' AND IDSUMINISTRO = '1'";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -307,7 +307,7 @@
 	WHERE AUFECHACREACION >= '2017/01/01' AND AUFECHACREACION <= '2017/12/31' AND IDSUMINISTRO = '1'";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -333,7 +333,7 @@
 	 $sql = " SELECT $select FROM SAB_CAT_UNIDADMEDIDAS";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -359,7 +359,7 @@
 	 $sql = " SELECT $select FROM  vv_CATALOGOPRODUCTOS as p WHERE p.IDSUMINISTRO IN (1,2,4)";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -385,7 +385,7 @@
 	 $sql = " SELECT $select FROM SAB_CAT_ALMACENES";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -417,7 +417,7 @@ ON PC.IDCONTRATO=C.IDCONTRATO AND PC.IDPROVEEDOR = C.IDPROVEEDOR AND PC.IDESTABL
 SELECT OBJ.IDPRODUCTO, OBJ.NUMEROCONTRATO, OBJ.IDPROVEEDOR, PR.NOMBRE, PV.NOMBRE AS PROVEEDOR, PV.NIT FROM OBJ INNER JOIN SAB_CAT_PROVEEDORES AS PV ON PV.IDPROVEEDOR = OBJ.IDPROVEEDOR  INNER JOIN SAB_CAT_CATALOGOPRODUCTOS PR ON PR.IDPRODUCTO = OBJ.IDPRODUCTO";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -449,7 +449,7 @@ WHERE pc.AUFECHACREACION >= '2016/01/01' AND pc.AUFECHACREACION <= '2016/12/31' 
 AND c.AUFECHACREACION >= '2016/01/01' AND c.AUFECHACREACION <= '2016/12/31' AND p.IDSUMINISTRO IN (1,2,4)";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -484,7 +484,7 @@ AND c.AUFECHACREACION >= '2016/01/01' AND c.AUFECHACREACION <= '2016/12/31' AND 
        WHERE IDESTABLECIMIENTO IN ( $ids )";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -527,7 +527,7 @@ AND c.AUFECHACREACION >= '2016/01/01' AND c.AUFECHACREACION <= '2016/12/31' AND 
      AND CP.IDPRODUCTO=$producto GROUP BY CP.IDPRODUCTO,CP.CLASIFICACION,PPE.IDPROGRAMACION, PPE.IDPRODUCTO,CP.DESCLARGO,UM.DESCRIPCION";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -568,7 +568,7 @@ AND c.AUFECHACREACION >= '2016/01/01' AND c.AUFECHACREACION <= '2016/12/31' AND 
        GROUP BY AE.IDESTABLECIMIENTO, AL.IDPRODUCTO ORDER BY AE.IDESTABLECIMIENTO, AL.IDPRODUCTO";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -599,7 +599,7 @@ AND c.AUFECHACREACION >= '2016/01/01' AND c.AUFECHACREACION <= '2016/12/31' AND 
        GROUP BY AL.IDPRODUCTO ORDER BY AL.IDPRODUCTO";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
