@@ -445,17 +445,16 @@ JOIN  SAB_UACI_PRODUCTOSCONTRATO as pro on pro.IDPRODUCTO = PPE.IDPRODUCTO $prog
  //Listado de medicamentos por contratos
  $sinab->get('/medicamentoscontratos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
-	 $suministro = $_GET["suministro"];
 	 $anyo = date('Y', strtotime('-1 year'));
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $select = " DISTINCT pc.IDPRODUCTO, pc.IDPROVEEDOR, pc.IDCONTRATO, pc.CANTIDAD, pc.PRECIOUNITARIO ";
+	 $select = "DISTINCT pc.IDPRODUCTO, pc.IDPROVEEDOR, pc.IDCONTRATO, pc.CANTIDAD, pc.PRECIOUNITARIO,pc.IDESTABLECIMIENTO";
 	 $sql = " SELECT $select 
      FROM SAB_UACI_PRODUCTOSCONTRATO AS pc
 INNER JOIN SAB_UACI_CONTRATOS AS c ON c.IDCONTRATO=pc.IDCONTRATO
 INNER JOIN vv_CATALOGOPRODUCTOS AS p ON P.IDPRODUCTO=pc.IDPRODUCTO
 WHERE pc.AUFECHACREACION >= '2016/01/01' AND pc.AUFECHACREACION <= '2016/12/31' AND c.IDTIPODOCUMENTO=2
-AND c.AUFECHACREACION >= '2016/01/01' AND c.AUFECHACREACION <= '2016/12/31' AND p.IDSUMINISTRO =$suministro";
+AND c.AUFECHACREACION >= '2016/01/01' AND c.AUFECHACREACION <= '2016/12/31' AND p.IDSUMINISTRO IN (1,2,4)";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("127.0.0.1:1433", 'sa', 'passwd' );
