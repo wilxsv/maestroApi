@@ -95,7 +95,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 { return 0; }	 
 	 return $app->json(array('respuesta' => $array_final), 201);
  });
- //Listado de productos
+ //Listado de productos ============ 4 ===============
  $sinab->get('/productos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
 	 
@@ -123,33 +123,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 return $app->json(array('respuesta' => $array_final), 201);
  });
  
-  //Listado de almacenes por lotes
- $sinab->get('/almaceneslotes', function () use ($app) {
-	 $tocken = $_GET["tocken"];
-	 
-	 $acceso = $app['autentica'];
-	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $anyo = date("Y")-1;
-	 $select = " IDALMACEN, IDPRODUCTO, IDUNIDADMEDIDA, PRECIOLOTE, CODIGO, FECHAVENCIMIENTO, IDLOTE ";
-	 $sql = "SELECT $select FROM [dbo].[SAB_ALM_LOTES] ";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
- });
+  
  
   
   //Estimacion de necesidades
@@ -245,34 +219,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
  });
   
  
- //Listado de lotes solamente de medicamentos
- $sinab->get('/lotesmedicamentos', function () use ($app) {
-	 $tocken = $_GET["tocken"];
-	 $acceso = $app['autentica'];
-	 $anyo = date("Y") - 1;
-	 $anyo = $anyo."/01/01";
 
-	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $select = "lotes.IDLOTE,lotes.IDUNIDADMEDIDA,lotes.IDPRODUCTO,lotes.CODIGO,lotes.FECHAVENCIMIENTO,lotes.PRECIOLOTE ";
-	 $sql = " SELECT $select FROM SAB_ALM_LOTES AS lotes JOIN SAB_CAT_CATALOGOPRODUCTOS As productos ON lotes.IDPRODUCTO=productos.IDPRODUCTO JOIN SAB_CAT_SUBGRUPOS AS sub ON productos.IDTIPOPRODUCTO=sub.IDGRUPO JOIN SAB_CAT_GRUPOS AS g ON sub.IDGRUPO=G.IDGRUPO JOIN SAB_CAT_SUMINISTROS AS s ON g.IDSUMINISTRO=s.IDSUMINISTRO WHERE lotes.AUFECHACREACION >= '2016/01/01' AND s.IDSUMINISTRO=1 ORDER BY lotes.IDLOTE";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
- });
 
  //Listado de Programaciones o estimacion de necesidades solo de medicamentos
  $sinab->get('/estimacionesmedicamentos', function () use ($app) {
@@ -382,32 +329,6 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 return $app->json(array('respuesta' => $array_final), 201);
  });
 
-//Listado de ALMACENES
- $sinab->get('/almacenes', function () use ($app) {
-	 $tocken = $_GET["tocken"];
-	 $acceso = $app['autentica'];
-	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $select = "IDALMACEN, NOMBRE, DIRECCION";
-	 $sql = " SELECT $select FROM SAB_CAT_ALMACENES";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
- });
-
 
 //Listado de medicamentos en una estimacion por id de programacion
  $sinab->get('/medicamentosestimacion', function () use ($app) {
@@ -468,13 +389,14 @@ INNER JOIN SAB_CAT_CATALOGOPRODUCTOS PR ON PR.IDPRODUCTO = OBJ.IDPRODUCTO";
 	 $anyo = date('Y', strtotime('-1 year'));
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $select = "DISTINCT pc.IDPRODUCTO, pc.IDPROVEEDOR, pc.IDCONTRATO, pc.CANTIDAD, pc.PRECIOUNITARIO,pc.IDESTABLECIMIENTO";
-	 $sql = " SELECT $select 
-     FROM SAB_UACI_PRODUCTOSCONTRATO AS pc
-INNER JOIN SAB_UACI_CONTRATOS AS c ON c.IDCONTRATO=pc.IDCONTRATO
-INNER JOIN vv_CATALOGOPRODUCTOS AS p ON P.IDPRODUCTO=pc.IDPRODUCTO
-WHERE pc.AUFECHACREACION >= '2016/01/01' AND pc.AUFECHACREACION <= '2016/12/31' AND c.IDTIPODOCUMENTO=2
-AND c.AUFECHACREACION >= '2016/01/01' AND c.AUFECHACREACION <= '2016/12/31' AND p.IDSUMINISTRO IN (1,2,4)";
+	 $sql = "SELECT DISTINCT PC.IDPRODUCTO, PC.IDPROVEEDOR, PC.IDCONTRATO, PC.CANTIDAD, PC.PRECIOUNITARIO,PC.IDESTABLECIMIENTO
+FROM SAB_UACI_CONTRATOS AS C INNER JOIN SAB_UACI_PRODUCTOSCONTRATO AS PC 
+ON PC.IDCONTRATO=C.IDCONTRATO
+WHERE C.IDTIPODOCUMENTO = 1  AND year(C.AUFECHACREACION) >= 2016 AND
+PC.IDPRODUCTO = ANY (SELECT VV.IDPRODUCTO 
+FROM vv_CATALOGOPRODUCTOS VV 
+WHERE VV.IDSUMINISTRO IN (1,2,4) 
+AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
