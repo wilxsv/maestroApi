@@ -6,7 +6,7 @@
   */
  $sinab = $app['controllers_factory'];
  
- //Listado de procesos de compra en el año en curso
+ //Listado de procesos de compra en el año en curso============    1   =================
  $sinab->get('/procesoscompras', function () use ($app) {
 	 $tocken = $_GET["tocken"];
 	 
@@ -14,7 +14,12 @@
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $anyo = date('Y', strtotime('-1 year'));
 	 $select = " NUMEROCONTRATO, IDPROVEEDOR, IDESTABLECIMIENTO, IDCONTRATO, NUMEROMODALIDADCOMPRA,	MONTOCONTRATO ";
-	 $sql = "SELECT $select FROM [dbo].[SAB_UACI_CONTRATOS] WHERE [IDTIPODOCUMENTO] = '2' AND NUMEROCONTRATO LIKE '%$anyo%' AND AUFECHACREACION >= '$anyo' ORDER BY [FECHAGENERACION] DESC";
+	 $sql = "SELECT $select ON PC.IDCONTRATO=C.IDCONTRATO
+WHERE C.IDTIPODOCUMENTO = 1  AND year(C.AUFECHACREACION) >= $anyo AND
+PC.IDPRODUCTO = ANY (SELECT VV.IDPRODUCTO 
+FROM vv_CATALOGOPRODUCTOS VV 
+WHERE VV.IDSUMINISTRO IN (1,2,4) 
+AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $array_final = array();
 	 try {
 		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
@@ -37,7 +42,7 @@
  });
  
  
- //Listado de establecimientos
+ //Listado de establecimientos ============    2   =================
  $sinab->get('/establecimientos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
 	 
@@ -64,7 +69,31 @@
 	 { return 0; }	 
 	 return $app->json(array('respuesta' => $array_final), 201);
  });
-  
+   //Listado de proveedores ============    3   =================
+ $sinab->get('/proveedoresporcontratos', function () use ($app) {
+	 $tocken = $_GET["tocken"];
+	 $acceso = $app['autentica'];
+	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
+	 $select = " DISTINCT P.IDPROVEEDOR,P.NOMBRE AS nombre ,P.nit AS nit, P.CODIGOPROVEEDOR ";
+	 $sql = " SELECT $select from SAB_CAT_PROVEEDORES as P";
+	 $array_final = array();
+	 try {
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
+		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
+			 die('algo paso con MSSQL');
+		 }
+		 else
+		 {
+			 $query = mssql_query($sql);
+			 while ($row = mssql_fetch_array($query)) {
+				array_push($array_final, $row );
+			 }			 
+		 }
+	 }
+	 catch(PDOException $e) 
+	 { return 0; }	 
+	 return $app->json(array('respuesta' => $array_final), 201);
+ });
  //Listado de productos
  $sinab->get('/productos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
@@ -214,31 +243,7 @@
 	 return $app->json(array('respuesta' => $array_final), 201);
  });
   
-  //Listado de proveedores
- $sinab->get('/proveedoresporcontratos', function () use ($app) {
-	 $tocken = $_GET["tocken"];
-	 $acceso = $app['autentica'];
-	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $select = " DISTINCT P.IDPROVEEDOR,P.NOMBRE AS nombre ,P.nit AS nit, P.CODIGOPROVEEDOR ";
-	 $sql = " SELECT $select from SAB_CAT_PROVEEDORES as P";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
- });
+ 
  //Listado de lotes solamente de medicamentos
  $sinab->get('/lotesmedicamentos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
