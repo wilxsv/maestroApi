@@ -7,30 +7,9 @@
 
  $provider = array(
     'dbs.options' => array (
-        'api' => array(
-            'driver'    => 'pdo_pgsql',
-            'host'      => '127.0.0.1',
-            'dbname'    => 'maestroapi',
-            'user'      => 'dtic',
-            'password'  => 'dtic',
-        ),
-        'establecimiento' => array(
-            'driver'    => 'pdo_pgsql',
-            'host'      => '127.0.0.1',
-            'dbname'    => 'e',
-            'user'      => 'dtic',
-            'password'  => 'dtic',
-        ),
-        'insumo' => array(
-            'driver'    => 'pdo_pgsql',
-            'host'      => '127.0.0.1',
-            'dbname'    => 'mi',
-            'user'      => 'dtic',
-            'password'  => 'dtic',
-        ),
         'sinab' => array(
             'driver'    => 'PDO_SQLSRV',
-            'host'      => '127.0.0.1',
+            'host'      => '192.168.7.250',
             'port'      => '1433',
             'dbname'    => 'abastecimiento',
             'user'      => 'sa',
