@@ -53,4 +53,28 @@
 	 return $app->json(array('respuesta' => $array), 201);
  }); 
  
+ $app['registraConsumo'] = $app->protect(function ($app, $data) {
+	 $value = "ctl_insumoid, ctl_establecimientoid, cantidad_existencia, fecha_caducidad, lote_existencia, fecha_existencia, almacen_farmacia, user_id_schema, ip_user_schema";
+	 $sql = "INSERT INTO ctl_existencias ( $value ) VALUES (".$data['producto'].", ".$data['establecimiento'].", ".$data['cantidadexistencia'].", '".$data['caducidad']."', ".$data['lote'].", '".$data['fecha']."', ".$data['almacen'].", ".$data['user'].", '::1')"; 
+	 
+	 if ( is_numeric($data['cantidadexistencia']) && $data['cantidadexistencia'] >= 0 ){
+		$array = $app['dbs']['consumo']->executeQuery($sql)->rowCount();
+		$array = array('respuesta' => 'Existencia registrada.');
+	 }
+	 else
+		$array = array('error' => 'No pude completar tu peticion, cantidad de consumo inesperada.');
+	 
+	 $value = "fecha_consumo, cantidad_consumo, user_id_schema, ip_user_schema, ctl_mecanismoid";
+	 $sql = "INSERT INTO ctl_consumo ( $value ) VALUES ('".$data['fecha']."', ".$data['cantidadconsumo'].", ".$data['user'].", '::1', 3)"; 
+	 if ( is_numeric($data['cantidadconsumo']) && $data['cantidadconsumo'] >= 0 )
+	 {
+		$array = $app['dbs']['consumo']->executeQuery($sql)->rowCount();
+		$array = array('respuesta' => 'Consumo registrado.');
+	}
+	 else
+		$array = array('error' => 'No pude completar tu peticion, cantidad de consumo inesperada.');
+	 return $array;
+ });
+ 
+
 ?>
