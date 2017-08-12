@@ -567,5 +567,61 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 return $app->json(array('respuesta' => $array_final), 201);
  });
 
+//Este recurso se encarga de extraer los datos necesarios para el analizador de prorroga
+$sinab->get('/medicamentosestimacion', function () use ($app) {
+	 $tocken = $_GET["tocken"];
+	 //Parametros a revibir
+	 $programacion = $_GET["programacion"];
+	 $licitacion = $_GET["licitacion"];
+	 $establecimiento = $_GET["establecimiento"];
+	 $proveedor = $_GET["proveedor"];
+	 $producto = $_GET["producto"];
+	 $acceso = $app['autentica'];
+	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
+	 $sql = "SELECT DISTINCT PP.IDPRODUCTO,C.IDCONTRATO, C.NUMEROCONTRATO, C.IDPROVEEDOR, PPE.IDESTABLECIMIENTO, PPE.CANTIDADALMACEN, PPE.CANTIDADCOMPRAR,PC.PRECIOUNITARIO
+	 ,dbo.GETPROGRAMA(PPE.IDESTABLECIMIENTO, PP.IDPRODUCTO,659) AS P659
+	 ,dbo.GETPROGRAMA(PPE.IDESTABLECIMIENTO, PP.IDPRODUCTO,660) AS P660
+	 ,dbo.GETPROGRAMA(PPE.IDESTABLECIMIENTO, PP.IDPRODUCTO,661) AS P661
+	 ,dbo.GETPROGRAMA(PPE.IDESTABLECIMIENTO, PP.IDPRODUCTO,663) AS P663
+	 ,dbo.GETPROGRAMA(PPE.IDESTABLECIMIENTO, PP.IDPRODUCTO,664) AS P664
+	 ,dbo.GETPROGRAMA(PPE.IDESTABLECIMIENTO, PP.IDPRODUCTO,665) AS P665
+	 ,dbo.GETPROGRAMA(PPE.IDESTABLECIMIENTO, PP.IDPRODUCTO,666) AS P666
+
+	 FROM  SAB_URMIM_PROGRAMACIONPRODUCTOESTABLECIMIENTO PPE
+	 INNER JOIN SAB_URMIM_PROGRAMACIONPRODUCTO PP ON PPE.IDPROGRAMACION = PP.IDPROGRAMACION AND PPE.IDPRODUCTO = PP.IDPRODUCTO 
+	 INNER JOIN SAB_URMIM_PROGRAMACION P ON PP.IDPROGRAMACION = P.IDPROGRAMACION 
+	 INNER JOIN SAB_UACI_PRODUCTOSCONTRATO PC ON PC.IDPRODUCTO = PP.IDPRODUCTO 
+	 INNER JOIN SAB_UACI_CONTRATOS C 
+	 ON PC.IDCONTRATO=C.IDCONTRATO
+	 AND PC.IDPROVEEDOR = C.IDPROVEEDOR
+	 AND PC.IDESTABLECIMIENTO = C.IDESTABLECIMIENTO
+	 INNER JOIN SAB_CAT_PROVEEDORES AS PV ON PV.IDPROVEEDOR = C.IDPROVEEDOR 
+	 INNER JOIN SAB_CAT_CATALOGOPRODUCTOS PR ON PR.IDPRODUCTO = PP.IDPRODUCTO
+
+	 WHERE PPE.IDPROGRAMACION = $programacion AND PPE.IDESTABLECIMIENTO = $establecimiento 
+	 AND C.NUMEROMODALIDADCOMPRA ='$licitacion' 
+	 AND C.IDTIPODOCUMENTO=2 
+	 AND  C.IDPROVEEDOR =$proveedor
+	 AND PC.IDPRODUCTO = ANY (SELECT VV.IDPRODUCTO FROM vv_CATALOGOPRODUCTOS VV WHERE VV.IDSUMINISTRO IN (1,2,4) AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
+	 $array_final = array();
+	
+	 try {
+		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
+			 die('algo paso con MSSQL');
+		 }
+		 else
+		 {
+			 $query = mssql_query($sql);
+			 while ($row = mssql_fetch_array($query)) {
+				array_push($array_final, $row );
+			 }			 
+		 }
+	 }
+	 catch(PDOException $e) 
+	 { return 0; }	 
+	 return $app->json(array('respuesta' => $array_final), 201);
+ });
+
 
 ?>
