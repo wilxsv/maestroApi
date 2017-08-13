@@ -568,14 +568,13 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
  });
 
 //Este recurso se encarga de extraer los datos necesarios para el analizador de prorroga
-$sinab->get('/medicamentosestimacion', function () use ($app) {
+$sinab->get('/medicamentosplanificacionprorroga', function () use ($app) {
 	 $tocken = $_GET["tocken"];
 	 //Parametros a revibir
 	 $programacion = $_GET["programacion"];
 	 $licitacion = $_GET["licitacion"];
 	 $establecimiento = $_GET["establecimiento"];
 	 $proveedor = $_GET["proveedor"];
-	 $producto = $_GET["producto"];
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $sql = "SELECT DISTINCT PP.IDPRODUCTO,C.IDCONTRATO, C.NUMEROCONTRATO, C.IDPROVEEDOR, PPE.IDESTABLECIMIENTO, PPE.CANTIDADALMACEN, PPE.CANTIDADCOMPRAR,PC.PRECIOUNITARIO
@@ -601,7 +600,7 @@ $sinab->get('/medicamentosestimacion', function () use ($app) {
 	 WHERE PPE.IDPROGRAMACION = $programacion AND PPE.IDESTABLECIMIENTO = $establecimiento 
 	 AND C.NUMEROMODALIDADCOMPRA ='$licitacion' 
 	 AND C.IDTIPODOCUMENTO=2 
-	 AND  C.IDPROVEEDOR =$proveedor
+	 AND C.IDPROVEEDOR =$proveedor
 	 AND PC.IDPRODUCTO = ANY (SELECT VV.IDPRODUCTO FROM vv_CATALOGOPRODUCTOS VV WHERE VV.IDSUMINISTRO IN (1,2,4) AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $array_final = array();
 	
