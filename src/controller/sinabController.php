@@ -23,7 +23,7 @@ WHERE VV.IDSUMINISTRO IN (1,2,4)
 AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -54,7 +54,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $sql = "SELECT $select FROM [dbo].[SAB_CAT_ESTABLECIMIENTOS] ORDER BY [NOMBRE] DESC";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -79,7 +79,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $sql = " SELECT $select from SAB_CAT_PROVEEDORES as P";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -106,7 +106,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $sql = "SELECT $select FROM [dbo].[vv_CATALOGOPRODUCTOS] ORDER BY [DESCLARGO] DESC";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -201,7 +201,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
      (PPE.IDESTABLECIMIENTO = @IDESTABLECIMIENTO OR @IDESTABLECIMIENTO = 0) ";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -232,7 +232,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	WHERE AUFECHACREACION >= '2015/01/01' AND AUFECHACREACION <= '2015/12/31' AND IDSUMINISTRO = '1'";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -260,7 +260,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	WHERE AUFECHACREACION >= '2017/01/01' AND AUFECHACREACION <= '2017/12/31' AND IDSUMINISTRO = '1'";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -286,7 +286,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $sql = " SELECT $select FROM SAB_CAT_UNIDADMEDIDAS";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -308,11 +308,11 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $tocken = $_GET["tocken"];
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $select = "p.IDPRODUCTO, p.CORRPRODUCTO, p.DESCPRODUCTO as NOMBRE, p.IDUNIDADMEDIDA, p.IDESTABLECIMIENTO";
-	 $sql = " SELECT $select FROM  vv_CATALOGOPRODUCTOS as p WHERE p.IDSUMINISTRO IN (1,2,4)";
+	 $select = "p.IDPRODUCTO, p.CORRPRODUCTO, p.DESCPRODUCTO as NOMBRE, p.IDUNIDADMEDIDA, p.IDESTABLECIMIENTO,p.DESCLARGO";
+	 $sql = " SELECT $select FROM  vv_CATALOGOPRODUCTOS as p WHERE p.IDSUMINISTRO IN (1)";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -367,7 +367,7 @@ INNER JOIN SAB_CAT_CATALOGOPRODUCTOS PR ON PR.IDPRODUCTO = OBJ.IDPRODUCTO";
 	 $array_final = array();
 	
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -390,17 +390,17 @@ INNER JOIN SAB_CAT_CATALOGOPRODUCTOS PR ON PR.IDPRODUCTO = OBJ.IDPRODUCTO";
 	 $anyo = date('Y', strtotime('-1 year'));
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
-	 $sql = "SELECT DISTINCT PC.IDPRODUCTO, PC.IDPROVEEDOR, PC.IDCONTRATO, PC.CANTIDAD, PC.PRECIOUNITARIO,PC.IDESTABLECIMIENTO
+	 $sql = "SELECT DISTINCT PC.IDPRODUCTO, PC.IDPROVEEDOR, PC.IDCONTRATO, PC.CANTIDAD, PC.PRECIOUNITARIO,PC.IDESTABLECIMIENTO,PC.RENGLON
 FROM SAB_UACI_CONTRATOS AS C INNER JOIN SAB_UACI_PRODUCTOSCONTRATO AS PC 
 ON PC.IDCONTRATO=C.IDCONTRATO
-WHERE C.IDTIPODOCUMENTO = 1  AND year(C.AUFECHACREACION) >= 2016 AND
+WHERE C.IDTIPODOCUMENTO = 1  AND year(C.AUFECHACREACION) > 2016 AND
 PC.IDPRODUCTO = ANY (SELECT VV.IDPRODUCTO 
 FROM vv_CATALOGOPRODUCTOS VV 
 WHERE VV.IDSUMINISTRO IN (1,2,4) 
 AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -435,7 +435,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
        WHERE IDESTABLECIMIENTO IN ( $ids )";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -455,7 +455,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 //Analisis de cobertura por medicamento a nivel nacional
  $sinab->get('/datoscobertura', function () use ($app) {
 	 $tocken = $_GET["tocken"];
-	 $producto = $_GET["idproducto"];
+	 $productos = $_GET["idproductos"];
 	 $programacion = $_GET["programacion"];
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
@@ -475,10 +475,10 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
       inner join SAB_CAT_UNIDADMEDIDAS UM
         ON UM.IDUNIDADMEDIDA=CP.IDUNIDADMEDIDA WHERE PPE.IDPROGRAMACION = $programacion
      AND E.CANTIDADDISPONIBLE >= 0
-     AND CP.IDPRODUCTO=$producto GROUP BY CP.IDPRODUCTO,CP.CLASIFICACION,PPE.IDPROGRAMACION, PPE.IDPRODUCTO,CP.DESCLARGO,UM.DESCRIPCION";
+     AND CP.IDPRODUCTO IN ($productos) GROUP BY CP.IDPRODUCTO,CP.CLASIFICACION,PPE.IDPROGRAMACION, PPE.IDPRODUCTO,CP.DESCLARGO,UM.DESCRIPCION";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -519,7 +519,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
        GROUP BY AE.IDESTABLECIMIENTO, AL.IDPRODUCTO ORDER BY AE.IDESTABLECIMIENTO, AL.IDPRODUCTO";
 	 $array_final = array();
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
@@ -539,18 +539,19 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
  //existencias de medicamentos no vencidos por todos los establecimientos (sumatoria)
  $sinab->get('/existencianacional', function () use ($app) {
 	 $tocken = $_GET["tocken"];
-	 $producto = $_GET["producto"];
+	 $producto = $_GET["productos"];
 	 $fecha = $_GET["fecha"];
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = "SUM(CANTIDADDISPONIBLE) AS existencia";
 	 $sql = " SELECT $select 
      FROM SAB_ALM_LOTES AS AL INNER JOIN SAB_CAT_ALMACENESESTABLECIMIENTOS AE ON AL.IDALMACEN = AE.IDALMACEN
-       WHERE  (ESTADISPONIBLE = 1) AND (FECHAVENCIMIENTO >= '$fecha') AND AL.IDPRODUCTO = $producto
+       WHERE  (ESTADISPONIBLE = 1) AND (FECHAVENCIMIENTO >= '$fecha') AND AL.IDPRODUCTO IN($producto)
        GROUP BY AL.IDPRODUCTO ORDER BY AL.IDPRODUCTO";
 	 $array_final = array();
+	 echo $sql;
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
