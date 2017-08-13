@@ -606,7 +606,7 @@ $sinab->get('/medicamentosplanificacionprorroga', function () use ($app) {
 	 $array_final = array();
 	
 	 try {
-		 $dbh = mssql_connect("192.168.7.200:1433", 'sa', 'passwd' );
+		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
 		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
 			 die('algo paso con MSSQL');
 		 }
