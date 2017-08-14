@@ -574,7 +574,6 @@ $sinab->get('/medicamentosplanificacionprorroga', function () use ($app) {
 	 //Parametros a revibir
 	 $programacion = $_GET["programacion"];
 	 $licitacion = $_GET["licitacion"];
-	 $establecimiento = $_GET["establecimiento"];
 	 $proveedor = $_GET["proveedor"];
 	 $producto = $_GET["producto"];
 	 $acceso = $app['autentica'];
@@ -620,7 +619,7 @@ $sinab->get('/medicamentosplanificacionprorroga', function () use ($app) {
 			INNER JOIN SAB_CAT_ESTABLECIMIENTOS ES ON ES.IDESTABLECIMIENTO = AE.IDESTABLECIMIENTO
 
 			-- MAS PARAMETROS ;)
-			WHERE YEAR(P.AUFECHACREACION) >= 2016
+			WHERE YEAR(P.AUFECHACREACION) >= 2017
 			--AND PC.IDPRODUCTO IS NULL
 			AND PPE.IDPRODUCTO IN ($producto) 
 			AND PPE.IDPROGRAMACION = $programacion
