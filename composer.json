@@ -1,7 +1,27 @@
 {
+    "name"        : "MINSAL/API-catalogos-maestros-y-de-sistemas-criticos",
+    "type"        : "library",
+    "description" : "Aplicacion que responde en formato json a consultas que le realicen de diferentes sistemas como establecimientos, insumos, consumos, contratos y otros",
+    "keywords"    : ["framework"],
+    "homepage"    : "http://api.maestro.salud.gob.sv/",
+    "license"     : "MIT",
+    "authors"     : [
+        {
+            "name"  : "William Vides",
+            "email" : "wilx.sv@yandex.com"
+        }
+    ],
     "require": {
         "silex/silex": "^2.1",
         "monolog/monolog": "^1.23",
-        "doctrine/dbal": "~2.2"
+        "doctrine/dbal": "~2.2",
+        "swiftmailer/swiftmailer": "^5.4"
+    },
+    "scripts": {
+    },
+    "autoload": {
+        "psr-0": { 
+		"Controller": "src/"
+		}
     }
 }

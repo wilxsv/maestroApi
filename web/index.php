@@ -12,8 +12,12 @@
  use Doctrine\Common\ClassLoader;
  use Symfony\Component\HttpFoundation\ParameterBag;
  
- $app = new Silex\Application();
+ require_once __DIR__.'/../vendor/autoload.php';
+ $app = require __DIR__.'/../src/app.php';
+ 
+ /*$app = new Silex\Application();
  $app['debug'] = true;
+ 
  $uri = '/v1/';
 
  $app->before(function (Request $request) {
@@ -65,6 +69,8 @@
 	 
     return $app->json(array('respuesta' => 'Estamos activos, que le podemos responder'), 201);
  }); 
+*/
+
  $app->run();
 ?>
 
