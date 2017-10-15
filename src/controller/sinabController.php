@@ -20,7 +20,8 @@ function consumirApi($sql, $app){
 		$query = mssql_query($sql);
 		while ($row = mssql_fetch_array($query)) {
 			array_push($array_final, $row );
-		}			 
+		}
+		
         return $array_final;
 		
 	}
@@ -62,7 +63,7 @@ AND CP.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $select = " IDESTABLECIMIENTO, CODIGOESTABLECIMIENTO, IDMAESTRO, NOMBRE ";
 	 $sql = "SELECT $select FROM [dbo].[SAB_CAT_ESTABLECIMIENTOS] ORDER BY [NOMBRE] DESC";
 	 
-	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
    //Listado de proveedores ============    3   =================
  $sinab->get('/proveedoresporcontratos', function () use ($app) {
@@ -72,7 +73,7 @@ AND CP.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $select = " DISTINCT P.IDPROVEEDOR,P.NOMBRE AS nombre ,P.nit AS nit, P.CODIGOPROVEEDOR ";
 	 $sql = " SELECT $select from SAB_CAT_PROVEEDORES as P";
 	 
-	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
  //Listado de productos ============ 4 ===============
  $sinab->get('/productos', function () use ($app) {
@@ -84,7 +85,7 @@ AND CP.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $select = " IDPRODUCTO, CORRPRODUCTO, IDUNIDADMEDIDA, DESCRIPCION AS NOMBREUNIDADMEDIDA, DESCLARGO AS NOMBRE ";
 	 $sql = "SELECT $select FROM [dbo].[vv_CATALOGOPRODUCTOS] ORDER BY [DESCLARGO] DESC";
 	 
-	 return $app->json(array('respuesta' =>  consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' =>  consumirApi($sql, $app)), 201);
  });
  
   
@@ -164,7 +165,7 @@ AND CP.IDPRODUCTO = PC.IDPRODUCTO)";
      WHERE PPE.IDPROGRAMACION = @IDPROGRAMACION AND 
      (PPE.IDESTABLECIMIENTO = @IDESTABLECIMIENTO OR @IDESTABLECIMIENTO = 0) ";
 	 
-	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
   
  
@@ -180,7 +181,7 @@ AND CP.IDPRODUCTO = PC.IDPRODUCTO)";
 	FROM SAB_URMIM_PROGRAMACION
 	WHERE AUFECHACREACION >= '2015/01/01' AND AUFECHACREACION <= '2015/12/31' AND IDSUMINISTRO = '1'";
 	
-	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
 
   //Listado de planificaciones de necesidades de los medicamentos
@@ -193,7 +194,7 @@ AND CP.IDPRODUCTO = PC.IDPRODUCTO)";
 	FROM SAB_URMIM_PROGRAMACION
 	WHERE AUFECHACREACION >= '2016/03/01' AND AUFECHACREACION <= '2016/12/31' AND IDSUMINISTRO = '1'";
     
-	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
 
  //Listado de unidades de medidas
@@ -204,7 +205,7 @@ AND CP.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $select = "IDUNIDADMEDIDA, DESCRIPCION";
 	 $sql = " SELECT $select FROM SAB_CAT_UNIDADMEDIDAS";
 	 
-	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
 
  //Listado de medicamentos
@@ -215,7 +216,7 @@ AND CP.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $select = "p.IDPRODUCTO, p.CORRPRODUCTO, p.DESCPRODUCTO as NOMBRE, p.IDUNIDADMEDIDA, p.IDESTABLECIMIENTO,p.DESCLARGO";
 	 $sql = " SELECT $select FROM  vv_CATALOGOPRODUCTOS as p WHERE p.IDSUMINISTRO IN (1)";
 	 
-	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
 
 
@@ -254,7 +255,7 @@ SELECT OBJ.IDPRODUCTO, OBJ.NUMEROCONTRATO, OBJ.IDPROVEEDOR, PR.NOMBRE, PV.NOMBRE
 INNER JOIN SAB_CAT_PROVEEDORES AS PV ON PV.IDPROVEEDOR = OBJ.IDPROVEEDOR 
 INNER JOIN SAB_CAT_CATALOGOPRODUCTOS PR ON PR.IDPRODUCTO = OBJ.IDPRODUCTO";
 	 
-	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
 
  //Listado de medicamentos por contratos
@@ -272,7 +273,7 @@ FROM vv_CATALOGOPRODUCTOS VV
 WHERE VV.IDSUMINISTRO IN (1,2,4) 
 AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 
-	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
 
  //Existencias de productos por establecimiento
@@ -292,7 +293,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
        FROM vv_EXISTENCIASESTABLECIMIENTOS
        WHERE IDESTABLECIMIENTO IN ( $ids )";
 	 
-	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
 
 //Analisis de cobertura por medicamento a nivel nacional
@@ -320,7 +321,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
      AND E.CANTIDADDISPONIBLE >= 0
      AND CP.IDPRODUCTO IN ($productos) GROUP BY CP.IDPRODUCTO,CP.CLASIFICACION,PPE.IDPROGRAMACION, PPE.IDPRODUCTO,CP.DESCLARGO,UM.DESCRIPCION";
 	 
-	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
 
  //Existencias de productos por establecimiento filtrado por fecha de caducidad
@@ -346,7 +347,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
        WHERE  (ESTADISPONIBLE = 1) $fecha AND AE.IDESTABLECIMIENTO IN ( $ids )
        GROUP BY AE.IDESTABLECIMIENTO, AL.IDPRODUCTO ORDER BY AE.IDESTABLECIMIENTO, AL.IDPRODUCTO";
 	 
-	 return $app->json(array('respuesta' =>  consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' =>  consumirApi($sql, $app)), 201);
  });
 
  //existencias de medicamentos no vencidos por todos los establecimientos (sumatoria)
@@ -362,7 +363,7 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
        WHERE  (ESTADISPONIBLE = 1) AND (FECHAVENCIMIENTO >= '$fecha') AND AL.IDPRODUCTO IN($producto)
        GROUP BY AL.IDPRODUCTO ORDER BY AL.IDPRODUCTO";
 	 
-	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
 
 //Este recurso se encarga de extraer los datos necesarios para el analizador de prorroga
@@ -423,7 +424,7 @@ $sinab->get('/medicamentosplanificacionprorroga', function () use ($app) {
 			AND PPE.IDPRODUCTO = ANY (SELECT VV.IDPRODUCTO FROM vv_CATALOGOPRODUCTOS VV WHERE VV.IDSUMINISTRO IN (1,2,4) AND VV.IDPRODUCTO = PPE.IDPRODUCTO)
 			ORDER BY PV.IDPROVEEDOR, PPE.IDPRODUCTO";
 	 
-	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
 
 
