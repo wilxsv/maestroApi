@@ -75,6 +75,8 @@ AND CP.IDPRODUCTO = PC.IDPRODUCTO)";
 	 
 	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
+ 
+ 
  //Listado de productos ============ 4 ===============
  $sinab->get('/productos', function () use ($app) {
 	 $tocken = $_GET["tocken"];
@@ -88,7 +90,8 @@ AND CP.IDPRODUCTO = PC.IDPRODUCTO)";
 	 return $app->json(array('respuesta' =>  consumirApi($sql, $app)), 201);
  });
  
-  
+
+
  
   
   //Estimacion de necesidades
@@ -221,6 +224,29 @@ AND CP.IDPRODUCTO = PC.IDPRODUCTO)";
  });
 
 
+ //Listado de proveedores por proceso de compra
+ $sinab->get('/proveedoresporproceso', function () use ($app) {
+	 $tocken = $_GET["tocken"];
+	 $programacion = $_GET["programacion"];
+	 $procesocompra = $_GET["procesocompra"];
+	 $establecimiento = $_GET["establecimiento"];
+	 $acceso = $app['autentica'];
+	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
+	 
+	 $sql = "SELECT DISTINCT PC.IDPROVEEDOR, P.NOMBRE AS nombre ,P.nit AS nit, P.CODIGOPROVEEDOR 
+	 FROM SAB_UACI_PRODUCTOSCONTRATO PC
+INNER JOIN SAB_URMIM_PROGRAMACIONPRODUCTO PP
+ON PC.IDPRODUCTO = PP.IDPRODUCTO
+INNER JOIN SAB_CAT_PROVEEDORES P
+ON P.IDPROVEEDOR = PC.IDPROVEEDOR
+WHERE PC.IDCONTRATO IN 
+(SELECT DISTINCT IDCONTRATO FROM SAB_UACI_CONTRATOSPROCESOCOMPRA WHERE IDPROCESOCOMPRA = {$procesocompra})
+AND PC.IDESTABLECIMIENTO = {$establecimiento} AND PP.IDPROGRAMACION = {$programacion}";
+	 
+	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
+ });
+ 
+ 
 //Listado de medicamentos en una estimacion por id de programacion
  $sinab->get('/medicamentosestimacion', function () use ($app) {
 	 $tocken = $_GET["tocken"];
