@@ -7,13 +7,13 @@
  $sinab = $app['controllers_factory'];
  
 //metodo generico para conectarse
-function consumirApi($sql){
+function consumirApi($sql, $app){
 
-    $appArr = $app['dbs']['sinab'];
+    //$sinab['conn'];
     $array_final = array();
     try {
-        $dbh = mssql_connect("{$appArr['host']}:{$appArr['port']}", "{$appArr['user']}", "{$appArr['password']}" );
-        if (!$dbh || !mssql_select_db("{$appArr['dbname']}", $dbh)) {
+        $dbh = mssql_connect($app['conn']['host'].":".$app['conn']['port'], $app['conn']['user'], $app['conn']['password'] );
+        if (!$dbh || !mssql_select_db($app['conn']['dbname'], $dbh)) {
 			 die('algo paso con MSSQL');
         }
 		 
@@ -48,7 +48,7 @@ WHERE S.IDSUMINISTRO IN (1,2,4)
 AND CP.IDPRODUCTO = PC.IDPRODUCTO)";
 	 
 	 
-	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
+	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
  
  
