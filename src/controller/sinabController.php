@@ -6,6 +6,28 @@
   */
  $sinab = $app['controllers_factory'];
  
+//metodo generico para conectarse
+function consumirApi($sql){
+
+    $appArr = $app['dbs']['sinab'];
+    $array_final = array();
+    try {
+        $dbh = mssql_connect("{$appArr['host']}:{$appArr['port']}", "{$appArr['user']}", "{$appArr['password']}" );
+        if (!$dbh || !mssql_select_db("{$appArr['dbname']}", $dbh)) {
+			 die('algo paso con MSSQL');
+        }
+		 
+		$query = mssql_query($sql);
+		while ($row = mssql_fetch_array($query)) {
+			array_push($array_final, $row );
+		}			 
+        return $array_final;
+		
+	}
+	catch(PDOException $e) 
+	{ return 0; }
+ }
+ 
  //Listado de procesos de compra en el año en curso
  $sinab->get('/procesoscompras', function () use ($app) {
 	 $tocken = $_GET["tocken"];
@@ -16,30 +38,17 @@
 	 $sql = "SELECT DISTINCT C.NUMEROCONTRATO, C.IDPROVEEDOR, C.IDESTABLECIMIENTO, C.IDCONTRATO, C.NUMEROMODALIDADCOMPRA,C.MONTOCONTRATO
 FROM SAB_UACI_CONTRATOS AS C INNER JOIN SAB_UACI_PRODUCTOSCONTRATO AS PC 
 ON PC.IDCONTRATO=C.IDCONTRATO
-WHERE C.IDTIPODOCUMENTO = 1  AND year(C.AUFECHACREACION) > 2016 AND
-PC.IDPRODUCTO = ANY (SELECT VV.IDPRODUCTO 
-FROM vv_CATALOGOPRODUCTOS VV 
-WHERE VV.IDSUMINISTRO IN (1,2,4) 
-AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }
-	 //echo $app['dbs']['api']['_params']['driver'];
+WHERE C.IDTIPODOCUMENTO = 1  AND year(C.AUFECHACREACION) > {$anyo} AND
+PC.IDPRODUCTO = ANY (SELECT CP.IDPRODUCTO 
+FROM  dbo.SAB_CAT_CATALOGOPRODUCTOS AS CP INNER JOIN
+               dbo.SAB_CAT_SUBGRUPOS AS SG ON CP.IDTIPOPRODUCTO = SG.IDSUBGRUPO INNER JOIN
+               dbo.SAB_CAT_GRUPOS AS G ON SG.IDGRUPO = G.IDGRUPO INNER JOIN
+               dbo.SAB_CAT_SUMINISTROS AS S ON G.IDSUMINISTRO = S.IDSUMINISTRO 
+WHERE S.IDSUMINISTRO IN (1,2,4) 
+AND CP.IDPRODUCTO = PC.IDPRODUCTO)";
 	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+	 
+	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
  });
  
  
@@ -52,23 +61,8 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $anyo = date("Y")-1;
 	 $select = " IDESTABLECIMIENTO, CODIGOESTABLECIMIENTO, IDMAESTRO, NOMBRE ";
 	 $sql = "SELECT $select FROM [dbo].[SAB_CAT_ESTABLECIMIENTOS] ORDER BY [NOMBRE] DESC";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+	 
+	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
  });
    //Listado de proveedores ============    3   =================
  $sinab->get('/proveedoresporcontratos', function () use ($app) {
@@ -77,23 +71,8 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = " DISTINCT P.IDPROVEEDOR,P.NOMBRE AS nombre ,P.nit AS nit, P.CODIGOPROVEEDOR ";
 	 $sql = " SELECT $select from SAB_CAT_PROVEEDORES as P";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+	 
+	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
  });
  //Listado de productos ============ 4 ===============
  $sinab->get('/productos', function () use ($app) {
@@ -104,23 +83,8 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $anyo = date("Y")-1;
 	 $select = " IDPRODUCTO, CORRPRODUCTO, IDUNIDADMEDIDA, DESCRIPCION AS NOMBREUNIDADMEDIDA, DESCLARGO AS NOMBRE ";
 	 $sql = "SELECT $select FROM [dbo].[vv_CATALOGOPRODUCTOS] ORDER BY [DESCLARGO] DESC";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+	 
+	 return $app->json(array('respuesta' =>  consumirApi($sql)), 201);
  });
  
   
@@ -199,23 +163,8 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
     	  ON PP.IDPROGRAMACION = P.IDPROGRAMACION 
      WHERE PPE.IDPROGRAMACION = @IDPROGRAMACION AND 
      (PPE.IDESTABLECIMIENTO = @IDESTABLECIMIENTO OR @IDESTABLECIMIENTO = 0) ";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+	 
+	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
  });
   
  
@@ -230,23 +179,8 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $sql = "SELECT IDPROGRAMACION, DESCRIPCION
 	FROM SAB_URMIM_PROGRAMACION
 	WHERE AUFECHACREACION >= '2015/01/01' AND AUFECHACREACION <= '2015/12/31' AND IDSUMINISTRO = '1'";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+	
+	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
  });
 
   //Listado de planificaciones de necesidades de los medicamentos
@@ -258,23 +192,8 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $sql = "SELECT IDPROGRAMACION, DESCRIPCION
 	FROM SAB_URMIM_PROGRAMACION
 	WHERE AUFECHACREACION >= '2016/03/01' AND AUFECHACREACION <= '2016/12/31' AND IDSUMINISTRO = '1'";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+    
+	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
  });
 
  //Listado de unidades de medidas
@@ -284,23 +203,8 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = "IDUNIDADMEDIDA, DESCRIPCION";
 	 $sql = " SELECT $select FROM SAB_CAT_UNIDADMEDIDAS";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+	 
+	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
  });
 
  //Listado de medicamentos
@@ -310,23 +214,8 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = "p.IDPRODUCTO, p.CORRPRODUCTO, p.DESCPRODUCTO as NOMBRE, p.IDUNIDADMEDIDA, p.IDESTABLECIMIENTO,p.DESCLARGO";
 	 $sql = " SELECT $select FROM  vv_CATALOGOPRODUCTOS as p WHERE p.IDSUMINISTRO IN (1)";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+	 
+	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
  });
 
 
@@ -364,24 +253,8 @@ WHERE PP.IDPROGRAMACION = $programacion )
 SELECT OBJ.IDPRODUCTO, OBJ.NUMEROCONTRATO, OBJ.IDPROVEEDOR, PR.NOMBRE, PV.NOMBRE AS PROVEEDOR, PV.NIT FROM OBJ
 INNER JOIN SAB_CAT_PROVEEDORES AS PV ON PV.IDPROVEEDOR = OBJ.IDPROVEEDOR 
 INNER JOIN SAB_CAT_CATALOGOPRODUCTOS PR ON PR.IDPRODUCTO = OBJ.IDPRODUCTO";
-	 $array_final = array();
-	
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+	 
+	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
  });
 
  //Listado de medicamentos por contratos
@@ -398,23 +271,8 @@ PC.IDPRODUCTO = ANY (SELECT VV.IDPRODUCTO
 FROM vv_CATALOGOPRODUCTOS VV 
 WHERE VV.IDSUMINISTRO IN (1,2,4) 
 AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+	 
+	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
  });
 
  //Existencias de productos por establecimiento
@@ -433,23 +291,8 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
 	 $sql = " SELECT $select 
        FROM vv_EXISTENCIASESTABLECIMIENTOS
        WHERE IDESTABLECIMIENTO IN ( $ids )";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+	 
+	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
  });
 
 //Analisis de cobertura por medicamento a nivel nacional
@@ -476,23 +319,8 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
         ON UM.IDUNIDADMEDIDA=CP.IDUNIDADMEDIDA WHERE PPE.IDPROGRAMACION = $programacion
      AND E.CANTIDADDISPONIBLE >= 0
      AND CP.IDPRODUCTO IN ($productos) GROUP BY CP.IDPRODUCTO,CP.CLASIFICACION,PPE.IDPROGRAMACION, PPE.IDPRODUCTO,CP.DESCLARGO,UM.DESCRIPCION";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+	 
+	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
  });
 
  //Existencias de productos por establecimiento filtrado por fecha de caducidad
@@ -517,23 +345,8 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
        FROM SAB_ALM_LOTES AS AL INNER JOIN SAB_CAT_ALMACENESESTABLECIMIENTOS AE ON AL.IDALMACEN = AE.IDALMACEN
        WHERE  (ESTADISPONIBLE = 1) $fecha AND AE.IDESTABLECIMIENTO IN ( $ids )
        GROUP BY AE.IDESTABLECIMIENTO, AL.IDPRODUCTO ORDER BY AE.IDESTABLECIMIENTO, AL.IDPRODUCTO";
-	 $array_final = array();
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+	 
+	 return $app->json(array('respuesta' =>  consumirApi($sql)), 201);
  });
 
  //existencias de medicamentos no vencidos por todos los establecimientos (sumatoria)
@@ -548,24 +361,8 @@ AND VV.IDPRODUCTO = PC.IDPRODUCTO)";
      FROM SAB_ALM_LOTES AS AL INNER JOIN SAB_CAT_ALMACENESESTABLECIMIENTOS AE ON AL.IDALMACEN = AE.IDALMACEN
        WHERE  (ESTADISPONIBLE = 1) AND (FECHAVENCIMIENTO >= '$fecha') AND AL.IDPRODUCTO IN($producto)
        GROUP BY AL.IDPRODUCTO ORDER BY AL.IDPRODUCTO";
-	 $array_final = array();
-	 echo $sql;
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+	 
+	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
  });
 
 //Este recurso se encarga de extraer los datos necesarios para el analizador de prorroga
@@ -625,24 +422,8 @@ $sinab->get('/medicamentosplanificacionprorroga', function () use ($app) {
 			AND PPE.IDPROGRAMACION = $programacion
 			AND PPE.IDPRODUCTO = ANY (SELECT VV.IDPRODUCTO FROM vv_CATALOGOPRODUCTOS VV WHERE VV.IDSUMINISTRO IN (1,2,4) AND VV.IDPRODUCTO = PPE.IDPRODUCTO)
 			ORDER BY PV.IDPROVEEDOR, PPE.IDPRODUCTO";
-	 $array_final = array();
-	
-	 try {
-		 $dbh = mssql_connect("192.168.1.200:1433", 'sa', 'passwd' );
-		 if (!$dbh || !mssql_select_db('abastecimiento', $dbh)) {
-			 die('algo paso con MSSQL');
-		 }
-		 else
-		 {
-			 $query = mssql_query($sql);
-			 while ($row = mssql_fetch_array($query)) {
-				array_push($array_final, $row );
-			 }			 
-		 }
-	 }
-	 catch(PDOException $e) 
-	 { return 0; }	 
-	 return $app->json(array('respuesta' => $array_final), 201);
+	 
+	 return $app->json(array('respuesta' => consumirApi($sql)), 201);
  });
 
 
