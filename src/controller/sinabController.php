@@ -186,13 +186,14 @@ AND CP.IDPRODUCTO = PC.IDPRODUCTO)";
 
   //Listado de planificaciones de necesidades de los medicamentos
  $sinab->get('/planificacionmedicamentos', function () use ($app) {
+    $anyo = date("Y")-1;
 	 $tocken = $_GET["tocken"];
 	 $acceso = $app['autentica'];
 	 if (!$acceso($app, $_GET["tocken"])){ return $app->json($error, 404); }
 	 $select = "IDPROGRAMACION, DESCRIPCION";
 	 $sql = "SELECT IDPROGRAMACION, DESCRIPCION
 	FROM SAB_URMIM_PROGRAMACION
-	WHERE AUFECHACREACION >= '2016/03/01' AND AUFECHACREACION <= '2016/12/31' AND IDSUMINISTRO = '1'";
+	WHERE AUFECHACREACION >= '{$anyo}/03/01' AND AUFECHACREACION <= '{$anyo}/12/31' AND IDSUMINISTRO = '1'";
     
 	 return $app->json(array('respuesta' => consumirApi($sql, $app)), 201);
  });
